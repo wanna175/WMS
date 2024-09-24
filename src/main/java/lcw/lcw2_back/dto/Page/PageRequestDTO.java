@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -23,15 +24,13 @@ public class PageRequestDTO {
 
     @Builder.Default
     private int size = 15;
-    private String type; // 검색 종류 : t,c,tc,tw,twc
-    private String keyword;
+    private String status; //검색조건 : 진행상태
+    private String item; //검색조건 : 품목명
+    private LocalDateTime startDate; //검색조건 : 요청날짜 중 시작날짜
+    private LocalDateTime endDate; //검색조건 : 요청날짜 중 끝날짜
+    private String receivingStorageName; //검색조건 : 수신지 창고
+    private String outboundStorageName; //검색조건 : 출고 창고 (총관리자만 사용)
 
-    public String[] getTypes(){
-        if(type == null || type.isEmpty()){
-            return null;
-        }
-        return type.split("");
-    }
 
     public Pageable getPageable(String...props) {
         return PageRequest.of(this.page -1, this.size, Sort.by(props).descending());
@@ -47,21 +46,12 @@ public class PageRequestDTO {
             builder.append("page=" + this.page);
 
             builder.append("&size=" + this.size);
-
-
-            if(type != null && type.length() > 0){
-                builder.append("&type=" + type);
-            }
-
-            if(keyword != null){
-                try {
-                    builder.append("&keyword=" + URLEncoder.encode(keyword,"UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                }
-            }
-            link = builder.toString();
         }
 
         return link;
+    }
+
+    public int getSkip(){
+        return (page-1)*15;
     }
 }

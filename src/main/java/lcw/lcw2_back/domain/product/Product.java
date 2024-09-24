@@ -12,7 +12,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class Product {
-
     @Id
     private Long productId;
 

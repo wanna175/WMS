@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lcw.lcw2_back.mapper.OutboundMapper">
+    <!-- 출고요청서 작성 -->
+    <insert id="insertOutbound">
+        INSERT INTO outbound(user_id, request_date, receiving_storage_id) VALUES(#{userId}, now(), #{receivingStorageId})
+    </insert>
+
+    <!-- 출고요청서 작성할 때 품목 추가 -->
+    <insert id="insertOutbound">
+        INSERT INTO Item(outboud_id, product_id, quantity) VALUES(#{outboundId}, #{productId}, #{quantity})
+    </insert>
+
+
+
+
+
+
+    <!-- 조건을 동적으로 추가하기 위한 기본 조건 WHERE 1=1
+    참이라는 뜻으로, 여러 조건을 작성하고 동적 쿼리를 작성할 때 장점이 있다.
+    1. 가독성, 유지보수에 좋음
+        a. 보고싶은 조건의 AND부분을 참고해서 보면 된다.
+        b. 내가 없애고 싶거나 수정하고 싶은 조건의 AND 부분만 없애거나 삭제하면 된다.
+    2. 여러 조건을 추가하기 좋다.
+        a. 만약 WHERE1=1이 없다면 새로운 조건을 생성해줄 때 마다 이전 조건에도 추가한 조건에 대한 부분을 추가(수정)해줘야 하는데 그냥 새로운 조건만 AND하면 되서 그럴 필요가 없다.-->
+
+    <!-- 출고요청서 조회 -->
+    <select id="selectNotDoneList" resultType="lcw.lcw2_back.domain.outbound.Outbound" parameterType="map">
+        SELECT o.outbound_id,
+        p.product_name,
+        s_from.storage_name,
+        oi.quantity,
+        o.status,
+        o.request_date,
+        s_to.storage_name
+        FROM Outbound o
+        JOIN User u ON o.user_id = u.user_id
+        JOIN Storage s_from ON u.storage_id = s_from.storage_id
+        JOIN Storage s_to ON o.receiving_storage_id = s_to.storage_id  -- 수신지
+        JOIN Item oi ON oi.outbound_id = o.outbound_id
+        JOIN Product p ON oi.product_id = p.product_id
+        WHERE 1=1
+        AND status IN('NOT APPROVED', 'APPROVED')
+
+        <!-- 상태 필터: APPROVED 또는 NOT APPROVED -->
+        <if test="status != null and status != ''">
+            AND o.status = #{status}
+        </if>
+
+        <!-- 요청 날짜 범위 필터 -->
+        <if test="startDate != null and endDate != null">
+            AND DATE(o.request_date) BETWEEN #{startDate} AND #{endDate}
+        </if>
+
+
+        <!-- 아이템 필터: 특정 제품 이름으로 검색 -->
+        <if test="item != null and item != ''">
+            AND p.product_name LIKE CONCAT('%', #{item}, '%')
+        </if>
+
+        <!-- 수신지 창고명 필터 -->
+        <if test="receivingStorageName != null and receivingStorageName != ''">
+            AND s_to.storage_name LIKE CONCAT('%', #{receivingStorageName}, '%')
+        </if>
+
+        <!-- 출고 창고명 필터 : 총관리자만 사용 -->
+        <if test="outboundStorageName != null and outboundStorageName != ''">
+            AND s_from.storage_name LIKE CONCAT('%', #{outboundStorageName}, '%')
+        </if>
+
+        ORDER BY o.outbound_id DESC
+        LIMIT #{skip}, #{size}
+    </select>
+
+    <!-- 출고요청서 총 개수 -->
+    <select id="getCountNotDoneList" resultType="int">
+        SELECT count(*) FROM outbound WHERE status IN ('NOT APPROVED', 'APPROVED', 'REJECTED')
+    </select>
+
+
+
+
+
+    <!-- 출고현황 조회 -->
+    <select id="selectDoneList" resultType="lcw.lcw2_back.domain.outbound.Outbound" parameterType="map">
+        SELECT o.outbound_id,
+        p.product_name,
+        s_from.storage_name,
+        oi.quantity,
+        o.status,
+        o.complete_date,
+        s_to.storage_name
+        FROM Outbound o
+        JOIN User u ON o.user_id = u.user_id
+        JOIN Storage s_from ON u.storage_id = s_from.storage_id
+        JOIN Storage s_to ON o.receiving_storage_id = s_to.storage_id  -- 수신지
+        JOIN Item oi ON oi.outbound_id = o.outbound_id
+        JOIN Product p ON oi.product_id = p.product_id
+        WHERE 1=1
+        AND status IN('DONE', 'APPROVED')
+
+        <!-- 상태 필터: APPROVED 또는 NOT APPROVED -->
+        <if test="status != null and status != ''">
+            AND o.status = #{status}
+        </if>
+
+        <!-- 요청 날짜 범위 필터 -->
+        <if test="startDate != null and endDate != null">
+            AND o.complete_date BETWEEN #{startDate} AND #{endDate}
+        </if>
+
+        <!-- 아이템 필터: 특정 제품 이름으로 검색 -->
+        <if test="item != null and item != ''">
+            AND p.product_name LIKE CONCAT('%', #{item}, '%')
+        </if>
+
+        <!-- 수신지 창고명 필터 -->
+        <if test="receivingStorageName != null and receivingStorageName != ''">
+            AND s_to.storage_name LIKE CONCAT('%', #{receivingStorageName}, '%')
+        </if>
+
+        <!-- 출고 창고명 필터 : 총관리자만 사용 -->
+        <if test="outboundStorageName != null and outboundStorageName != ''">
+            AND s_from.storage_name LIKE CONCAT('%', #{outboundStorageName}, '%')
+        </if>
+
+        ORDER BY o.outbound_id DESC
+        LIMIT #{skip}, #{size}
+    </select>
+
+    <select id="getCountDoneList" resultType="int">
+        SELECT count(*) FROM outbound WHERE status IN ('DONE', 'APPROVED')
+    </select>
+
+
+
+
+
+
+    <!-- 출고요청 승인하기 -->
+    <update id="updateApprove">
+        UPDATE Outbound
+        SET status = 'APPROVED'
+        WHERE outbound_id IN (
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <!--출고요청 반려하기-->
+    <update id="updateRejected">
+        UPDATE Outbound
+        SET status = 'REJECTED'
+        WHERE outbound_id IN (
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+</mapper>

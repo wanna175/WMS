@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user/notice")
 public class NotificationController {
 
-    private final NotificationService notificationService;
+    //private final NotificationService notificationService;
 
 }
