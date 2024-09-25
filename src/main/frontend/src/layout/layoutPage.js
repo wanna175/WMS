@@ -45,6 +45,7 @@ export default function LayoutPage(props) {
     "/wms/inventory/1": ["재고관리", "음..."],
     "/wms/inventory/2": ["재고관리", "기타등등"],
     "/wms/mypage": ["WMS", "내정보"],
+    "/wms/dashboard": ["대시보드"],
   };
   const getItem = (label, key, icon, children) => {
     return {
@@ -79,6 +80,7 @@ export default function LayoutPage(props) {
       getItem("음...", "/wms/inventory/1"),
       getItem("기타등등", "/wms/inventory/2"),
     ]),
+    getItem("대시보드", "/wms/dashboard", <PieChartOutlined />),
   ];
   /////////////////////////////여기 위에 지저분한거 나중에 다른파일로 뺍시다.리팩토링필요
   const {
