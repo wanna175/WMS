@@ -1,7 +1,7 @@
 package lcw.lcw2_back.outbound.controller;
 
 import lcw.lcw2_back.controller.StorageController;
-import lcw.lcw2_back.dto.StorageDTO;
+import lcw.lcw2_back.dto.storage.StorageDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

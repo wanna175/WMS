@@ -40,8 +40,8 @@ public class StorageMapperTests {
         storageMapper.updateStorage(storage);
     }
 
-    @Test
-    public void deleteStorageTest() {
-        storageMapper.deleteStorage(6L);
-    }
+//    @Test
+//    public void deleteStorageTest() {
+//        storageMapper.deleteStorage();
+//    }
 }

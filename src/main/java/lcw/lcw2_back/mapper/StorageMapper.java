@@ -1,7 +1,6 @@
 package lcw.lcw2_back.mapper;
 
 import lcw.lcw2_back.domain.storage.Storage;
-import lcw.lcw2_back.dto.StorageDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -12,7 +11,8 @@ public interface StorageMapper {
 
     void insertStorage(Storage storage);
 
-    void deleteStorage(Long storageId);
+    void deleteStorage(List<Long> storageIds);
+    void updateStorageToNull(List<Long> storageIds);
 
     void updateStorage(Storage storage);
 

@@ -11,8 +11,25 @@
         INSERT INTO storage VALUES (NULL, #{storageName}, #{address}, #{addressDetail}, #{zipcode}, #{storageArea})
     </insert>
 
+
+
+    <!-- 먼저 외래 키를 NULL로 업데이트 -->
+    <update id="updateStorageToNull">
+        UPDATE user
+        SET storage_id = NULL
+        WHERE storage_id IN (
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
     <delete id="deleteStorage">
-        DELETE FROM storage WHERE storage_id = #{storageId}
+        DELETE FROM storage WHERE storage_id IN (
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        )
     </delete>
 
     <update id="updateStorage">

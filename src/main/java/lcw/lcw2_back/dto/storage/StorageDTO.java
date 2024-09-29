@@ -1,4 +1,4 @@
-package lcw.lcw2_back.dto;
+package lcw.lcw2_back.dto.storage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package lcw.lcw2_back.service.storage;
 
-import lcw.lcw2_back.dto.StorageDTO;
+import lcw.lcw2_back.dto.storage.StorageDTO;
 
 import java.util.List;
 
@@ -12,5 +12,6 @@ public interface StorageService {
 
     void changeStorage(StorageDTO storageDTO);
 
-    void clearStorageOne(Long storageId);
+    void clearStorageOne(List<Long> storageIds);
+    void changeStorageToNull(List<Long> storageIds);
 }

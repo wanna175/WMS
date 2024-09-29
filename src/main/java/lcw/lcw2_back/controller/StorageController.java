@@ -1,6 +1,6 @@
 package lcw.lcw2_back.controller;
 
-import lcw.lcw2_back.dto.StorageDTO;
+import lcw.lcw2_back.dto.storage.StorageDTO;
 import lcw.lcw2_back.service.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -40,7 +40,8 @@ public class StorageController {
     }
 
     @PostMapping("/remove_storage")
-    public void removeStorage(@RequestParam Long storageId) {
-        storageService.clearStorageOne(storageId);
+    public void removeStorage(@RequestBody List<Long> storageIds) {
+        storageService.changeStorageToNull(storageIds);
+        storageService.clearStorageOne(storageIds);
     }
 }

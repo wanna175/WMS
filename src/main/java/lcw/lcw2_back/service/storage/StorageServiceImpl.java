@@ -1,7 +1,7 @@
 package lcw.lcw2_back.service.storage;
 
 import lcw.lcw2_back.domain.storage.Storage;
-import lcw.lcw2_back.dto.StorageDTO;
+import lcw.lcw2_back.dto.storage.StorageDTO;
 import lcw.lcw2_back.mapper.StorageMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -39,7 +39,12 @@ public class StorageServiceImpl implements StorageService{
     }
 
     @Override
-    public void clearStorageOne(Long storageId) {
-        storageMapper.deleteStorage(storageId);
+    public void clearStorageOne(List<Long> storageIds) {
+        storageMapper.deleteStorage(storageIds);
+    }
+
+    @Override
+    public void changeStorageToNull(List<Long> storageIds) {
+        storageMapper.updateStorageToNull(storageIds);
     }
 }

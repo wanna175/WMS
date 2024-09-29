@@ -44,13 +44,7 @@ export default function Outbound() {
           status:"미승인",
           arriveName,
           outboundMart,
-          items
-        // items: [
-        //   {
-        //     productName,
-        //     quantity,
-        //   },
-        // ],
+          items,
       };
       console.log("보내는 데이터:", outboundDTO);
   
