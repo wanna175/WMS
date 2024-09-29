@@ -3,18 +3,13 @@ import * as S from "./writeoutbound.styles";
 export default function OutboundUI({
   userId,
   setUserId,
-  requestDate,
-  setRequestDate,
   arriveName,
   setArriveName,
   outboundMart,
   setOutboundMart,
-  outboundId,
-  setOutboundId,
-  productName,
-  setProductName,
-  quantity,
-  setQuantity,
+  items,
+  addItem,
+  handleItemChange,
   fetchData,
 }) {
 
@@ -22,21 +17,39 @@ export default function OutboundUI({
     <S.Wrapper>
       <h2>출고 요청서 작성</h2>
       <br></br>
-      <label>품목</label>
-      <select 
-      value={productName} 
-      onChange={(e) => setProductName(e.target.value)}>
-        <option>선택</option>
-        <option>Product X</option> 
-        <option>Product Y </option> 
-        <option>Product Z </option>
-      </select>
-      <br></br>
-      <br></br>
-      <label>수량</label>
-      <input type="text"
-      value={quantity}
-      onChange={(e) => setQuantity(e.target.value)}></input>
+      <label>사용자 ID</label>
+      <input
+        type="text"
+        value={userId}
+        onChange={(e) => setUserId(e.target.value)}
+        placeholder="사용자 ID를 입력하세요"
+      />
+      
+       {items.map((item, index) => (
+        <div key={index}>
+          <label>품목</label>
+          <select
+            value={item.productName}
+            onChange={(e) => handleItemChange(index, "productName", e.target.value)}
+          >
+            <option>선택</option>
+            <option>귤</option>
+            <option>감귤</option>
+            <option>한라봉</option>
+            <option>사과</option>
+            <option>레몬</option>
+          </select>
+
+          <label>수량</label>
+          <input
+            type="text"
+            value={item.quantity}
+            onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
+          />
+          <br></br>
+        </div>
+      ))}
+      <button onClick={addItem}>+ 품목 추가하기</button>
       <br></br>
       <br></br>
       <label>수신지</label>
@@ -44,11 +57,11 @@ export default function OutboundUI({
       value={arriveName}
       onChange={(e) => setArriveName(e.target.value)}>
         <option>선택</option>
-        <option>Storage A</option> 
-        <option>Storage B</option> 
-        <option>Storage C</option> 
-        <option>Storage D</option> 
-        <option>Storage E</option> 
+        <option>서울 창고</option> 
+        <option>부산 창고</option> 
+        <option>대구 창고</option> 
+        <option>광주 창고</option> 
+        <option>인천 창고</option> 
       </select>
       <br></br>
       <label>마트 출고 여부</label>

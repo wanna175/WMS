@@ -15,6 +15,7 @@ public class InboundItem {
     private Long inboundId;
 
     private Long productId;
+    private String productName;
 
     private Long quantity;
 }

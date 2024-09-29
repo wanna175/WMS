@@ -35,7 +35,7 @@
     <insert id="insertOutboundItem">
         INSERT INTO outbound_item(outbound_id, product_id, quantity)
         VALUES (#{outboundId},
-                (SELECT product_id FROM product WHERE product_name = #{productName} LIMIT 1),
+                (SELECT product_id FROM product WHERE product_name = #{productName}),
                 #{quantity})
     </insert>
 
@@ -216,6 +216,18 @@
         </foreach>
         )
         AND status = '미승인'
+    </update>
+
+    <!-- 출고 취소-->
+    <update id="updateOutboundDoneRejected">
+        UPDATE Outbound
+        SET status = '반려'
+        WHERE outbound_id IN (
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        )
+        AND status = '승인'
     </update>
 
     <!-- 출고요청 출고완료 -->

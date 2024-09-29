@@ -61,12 +61,12 @@ public class OutboundServiceTests {
 
         // 품목 리스트 생성
         OutboundItemDTO item1 = OutboundItemDTO.builder()
-                .productId(1L)
+                .productName("감귤")
                 .quantity(11L)
                 .build();
 
         OutboundItemDTO item2 = OutboundItemDTO.builder()
-                .productId(2L)
+                .productName("사과")
                 .quantity(66L)
                 .build();
 

@@ -4,8 +4,6 @@
   export default function OutboundUI({
     data,
     status,
-    requestDate,
-    setRequestDate,
     setStatus,
     startDate,
     setStartDate,
@@ -16,7 +14,6 @@
     item,
     setItem,
     outboundIds,
-    setOutboundIds,
     fetchData,
     approveOutboundRequests,
     rejectOutboundRequests,
@@ -99,112 +96,3 @@
       </div>
     );
   }
-
-
-
-
-
-
-
-
-
-
-
-// import * as S from "./requsestoutbound.styles";
-// import { Divider, Tabs ,Table } from 'antd';
-
-// export default function OutboundUI() {
-//   const onChange = (key) => {
-//     console.log(key);
-//   };
-  
-//   const items = [
-//     {
-//       key: '1',
-//       label: '사원목록',
-//     },
-//     {
-//       key: '2',
-//       label: '비사원목록',
-//     }
-//   ];
-  
-//   const columns = [
-//     {
-//       title: '이름',
-//       dataIndex: 'name',
-//       // render: (text) => <a>{text}</a>,
-//     },
-//     {
-//       title: '사원번호',
-//       dataIndex: 'userId',
-//     },
-//     {
-//       title: '이메일',
-//       dataIndex: 'email',
-//     },
-//     {
-//       title: '근무처',
-//       dataIndex: 'address',
-//     },
-//     {
-//       title: '직함',
-//       dataIndex: 'role',
-//     },
-//   ];
-
-//   const data = [
-//     {
-//       key: '1',
-//       name: 'John Brown',
-//       age: 32,
-//       address: 'New York No. 1 Lake Park',
-//     },
-//     {
-//       key: '2',
-//       name: 'Jim Green',
-//       age: 42,
-//       address: 'London No. 1 Lake Park',
-//     },
-//     {
-//       key: '3',
-//       name: 'Joe Black',
-//       age: 32,
-//       address: 'Sydney No. 1 Lake Park',
-//     },
-//     {
-//       key: '4',
-//       name: 'Disabled User',
-//       age: 99,
-//       address: 'Sydney No. 1 Lake Park',
-//     },
-//   ];
-  
-//   // rowSelection object indicates the need for row selection
-//   const rowSelection = {
-//     onChange: (selectedRowKeys, selectedRows) => {
-//       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-//     },
-//     getCheckboxProps: (record) => ({
-//       disabled: record.name === 'Disabled User',
-//       // Column configuration not to be checked
-//       name: record.name,
-//     }),
-//   };
-  
-//   // 이 부분이 추가되었습니다.
-//   return (
-//     <div>
-//       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-//       <Divider />
-//       <Table
-//         rowSelection={{
-//           type: 'checkbox',
-//           ...rowSelection,
-//         }}
-//         columns={columns}
-//         dataSource={data}
-//       />
-//     </div>
-//   );
-// }

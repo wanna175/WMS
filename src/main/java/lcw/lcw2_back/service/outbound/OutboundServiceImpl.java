@@ -62,6 +62,11 @@ public class OutboundServiceImpl implements OutboundService {
         outboundMapper.updateOutboundRejected(outboundIds);
     }
 
+    @Override
+    public void modifyOutboundDoneRejected(List<Long> outboundIds) {
+        outboundMapper.updateOutboundDoneRejected(outboundIds);
+    }
+
     //진행상태 출고완료 스케줄링
     //cron 초 - 분 - 시 - 일 - 월 - 요일
     @Override

@@ -1,10 +1,12 @@
 package lcw.lcw2_back.domain.inbound;
 
+import lcw.lcw2_back.dto.inbound.InboundItemDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -28,13 +30,11 @@ public class Inbound {
     private LocalDate inboundCompleteDate;
     private LocalDate outboundCompleteDate;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
-
     private String departStorageName;
-    private String arriveStorageName;
-
+    private String arriveName;
     private Long departStorageId;
 
     private String products;
+
+    private List<InboundItemDTO> items;
 }

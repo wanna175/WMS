@@ -10,7 +10,7 @@
     <insert id="insertInbound">
         INSERT INTO inbound(user_id, request_date, depart_storage_id, status)
         VALUES (#{userId}, now(),
-        (SELECT storage_id FROM storage WHERE storage_name = #{departName}),
+        (SELECT storage_id FROM storage WHERE storage_name = #{departStorageName}),
                 #{status})
         <selectKey keyProperty="inboundId" resultType="long" order="AFTER">
             SELECT LAST_INSERT_ID()
@@ -19,7 +19,7 @@
 
     <!-- 입고 요청서 작성할 때 품목 추가 -->
     <insert id="insertInboundItem">
-        INSERT INTO item(inbound_id, product_id, quantity)
+        INSERT INTO inbound_item(inbound_id, product_id, quantity)
         VALUES (#{inboundId},
                 (SELECT product_id FROM product WHERE product_name = #{productName}),
                 #{quantity})
@@ -46,13 +46,13 @@
         GROUP_CONCAT(CONCAT(p.product_name, ': ', ii.quantity) SEPARATOR ', ') AS products,
         i.status,
         i.request_date,
-        s_to.storage_name AS arriveStorageName,
+        s_to.storage_name AS arriveName,
         u_to.user_id <!-- 요청 아이디 -->
         FROM Inbound i
-        JOIN User u_to ON i.user_id = u_to.user_id
-        LEFT JOIN Storage s_from ON u.storage_id = s_from.storage_id
+        JOIN User u_from ON i.user_id = u_from.user_id
+        JOIN Storage s_from ON u_from.storage_id = s_from.storage_id
         LEFT JOIN Storage s_to ON i.depart_storage_id = s_to.storage_id  <!-- 발송지 -->
-        LEFT JOIN User u_from ON s_from.storage_id = u_from.storage_id <!-- 요청서 조회할 아이디를 얻기 위한 JOIN -->
+        LEFT JOIN User u_to ON s_to.storage_id = u_to.storage_id <!-- 요청서 조회할 아이디를 얻기 위한 JOIN -->
         JOIN Inbound_Item ii ON ii.inbound_id = i.inbound_id
         JOIN Product p ON ii.product_id = p.product_id
         WHERE 1=1
@@ -81,12 +81,12 @@
         </if>
 
         <!-- 입고 창고명 필터 : 총관리자만 사용 -->
-        <if test="inboundStorageName != null and inboundStorageName != ''">
-            AND s_from.storage_name LIKE CONCAT('%', #{inboundStorageName}, '%')
+        <if test="arriveName != null and arriveName != ''">
+            AND s_from.storage_name LIKE CONCAT('%', #{arriveName}, '%')
         </if>
 
         <!-- inbound_id로만 그룹화 -->
-        GROUP BY i.inbound_id, departStorageName, arriveStorageName, u_to.user_id, i.status, i.request_date
+        GROUP BY i.inbound_id, departStorageName, arriveName, u_to.user_id, i.status, i.request_date
 
         ORDER BY i.inbound_id DESC
         LIMIT #{skip}, #{size}
@@ -107,7 +107,7 @@
     <!-- 입고현황 조회 -->
     <select id="selectInboundDoneList" resultType="lcw.lcw2_back.domain.inbound.Inbound" parameterType="map">
         SELECT i.inbound_id,
-        s_from.storage_name AS arriveStorageName,
+        s_from.storage_name AS arriveName,
         <!--  GROUP_CONCAT으로 product_name과 quantity를 문자열로 결합 -->
         GROUP_CONCAT(CONCAT(p.product_name, ': ', ii.quantity) SEPARATOR ', ') AS products,
         i.status,
@@ -117,7 +117,7 @@
         JOIN User u ON i.user_id = u.user_id
         JOIN Storage s_from ON u.storage_id = s_from.storage_id
         LEFT JOIN Storage s_to ON i.depart_storage_id = s_to.storage_id  <!-- 발송지 -->
-        JOIN Item ii ON ii.inbound_id = i.inbound_id
+        JOIN inbound_item ii ON ii.inbound_id = i.inbound_id
         JOIN Product p ON ii.product_id = p.product_id
         WHERE 1=1
         AND status IN('승인','출고완료','입고완료')
@@ -143,12 +143,12 @@
         </if>
 
         <!-- 입고 창고명 필터 : 총관리자만 사용 -->
-        <if test="inboundStorageName != null and inboundStorageName != ''">
-            AND s_from.storage_name LIKE CONCAT('%', #{inboundStorageName}, '%')
+        <if test="arriveName != null and arriveName != ''">
+            AND s_from.storage_name LIKE CONCAT('%', #{arriveName}, '%')
         </if>
 
         <!-- inbound_id로만 그룹화 -->
-        GROUP BY i.inbound_id, departStorageName, arriveStorageName, i.status, i.request_date
+        GROUP BY i.inbound_id, departStorageName, arriveName, i.status, i.request_date
 
         ORDER BY i.inbound_id DESC
         LIMIT #{skip}, #{size}
@@ -164,7 +164,7 @@
 
 
     <!-- 입고요청 승인하기 -->
-    <update id="updateApprove">
+    <update id="updateInboundApprove">
         UPDATE Inbound
         SET status = '승인'
         WHERE inbound_id IN (
@@ -176,7 +176,7 @@
     </update>
 
     <!--입고요청 반려하기-->
-    <update id="updateRejected">
+    <update id="updateInboundRejected">
         UPDATE Inbound
         SET status = '반려'
         WHERE inbound_id IN (

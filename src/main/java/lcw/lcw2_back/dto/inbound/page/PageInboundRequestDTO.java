@@ -31,7 +31,7 @@ public class PageInboundRequestDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate; //검색조건 : 요청날짜 중 끝날짜
     private String departStorageName; //검색조건 : 발송지 창고
-    private String inboundStorageName; //검색조건 : 입고 창고 (총관리자만 사용)
+    private String arriveName; //검색조건 : 입고 창고 (총관리자만 사용)
 
 
     public Pageable getPageable(String...props) {

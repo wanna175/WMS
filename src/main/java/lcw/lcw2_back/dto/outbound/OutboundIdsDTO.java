@@ -1,19 +1,17 @@
 package lcw.lcw2_back.dto.outbound;
 
-import lcw.lcw2_back.domain.outbound.Outbound;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OutboundItemDTO {
-    private Long outboundId;
-
-    private String productName;
-
-    private Long quantity;
+public class OutboundIdsDTO {
+    private List<Long> outboundIds;
 }
+

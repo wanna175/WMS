@@ -15,8 +15,11 @@ public interface OutboundService {
     //체크박스에서 체크한 요청 승인 service
     void modifyOutboundApprove(List<Long> outboundIds);
 
-    //체크박스에서 체크한 요청 승인 service
+    //체크박스에서 체크한 요청 반려 service
     void modifyOutboundRejected(List<Long> outboundIds);
+
+    //체크박스에서 체크한 출고취소
+    void modifyOutboundDoneRejected(List<Long> outboundIds);
 
     //출고요청서 전체 조회
     PageOutboundResponseDTO<OutboundNotDoneListDTO> getOutboundNotDoneList(PageOutboundRequestDTO pageOutboundRequestDTO);
