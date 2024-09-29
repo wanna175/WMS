@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"; // useEffect와 useState를 React에서 가져온다.
-import axios from "axios"; //HTTP 요청을 보내기 위해 axios 라이브러리 호출.
 import OutboundUI from "./requsestoutbound.presenter";
 import { useAPI } from "../../axios/useAPI";
 
