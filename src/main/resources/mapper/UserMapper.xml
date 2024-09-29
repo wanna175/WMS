@@ -6,6 +6,24 @@
 <mapper namespace="lcw.lcw2_back.mapper.UserMapper">
 
 
+    <resultMap id="UserResultMap" type="lcw.lcw2_back.domain.user.User">
+
+        <result property="userId" column="user_id"/>
+        <result property="userPw" column="user_pw"/>
+        <result property="userName" column="user_name"/>
+
+        <!-- Role enum 매핑 -->
+        <result property="userPosition" column="user_position" javaType="lcw.lcw2_back.domain.userTest.Role"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+
+        <result property="storageId" column="storage_id"/>
+        <result property="userBirth" column="user_birth"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="userContact" column="user_contact"/>
+        <result property="userStatus" column="user_status"/>
+        <result property="userProfile" column="user_profile"/>
+    </resultMap>
+
     <!--1) 사원 관리 페이지 : 등록된 모든 사원 정보 리스트를 조회 & 미승인된 사원 목록을 조회
             1. 검색 조건
                 - private String userId; //검색조건 : 사원번호
@@ -13,59 +31,31 @@
                 - private String userRole; //검색조건 : 직책
             2. 케이스
                 - userStatus가 null일 때
-
     -->
-    <resultMap id="UserLoginResultMap" type="lcw.lcw2_back.domain.user2.User">
-        <!-- User 필드 매핑 -->
-        <result property="storageId" column="storage_id"/>
-        <result property="userName" column="user_name"/>
-        <result property="userEmail" column="user_email"/>
-        <result property="userContact" column="user_contact"/>
-        <result property="userBirth" column="user_birth"/>
-        <result property="regDate" column="reg_date"/>
-        <result property="modDate" column="mod_date"/>
-
-        <!-- Login 객체 매핑 -->
-        <association property="login" javaType="lcw.lcw2_back.domain.user2.Login">
-            <id property="userId" column="user_id"/>
-            <result property="userPw" column="user_pw"/>
-            <result property="userRole" column="user_role"/>
-            <result property="userStatus" column="user_status"/>
-        </association>
-    </resultMap>
-
-
-    <select id="selectUserList" resultMap="UserLoginResultMap" parameterType="lcw.lcw2_back.dto.user.page.PageUserRequestDTO">
+    <!-- 사용자 목록 조회 -->
+    <select id="selectUserList" resultMap="UserResultMap" parameterType="lcw.lcw2_back.dto.user.page.PageUserRequestDTO">
         SELECT *
         FROM user
         WHERE 1=1
-            AND user_status = #{userStatus}
-        <if test="userId != null and userId.matches('^[0-9]+$')">AND user_id = #{userId}</if>
-
-        <if test="userName != null and !userName.matches('^[0-9]+$')">AND user_name LIKE CONCAT('%', #{userName}, '%')</if>
-
-        <if test="userRole != null and userRole != ''">AND user_role = #{userRole}</if>
-
+        AND user_status = #{userStatus}
+        <if test="userId != null">AND user_id = #{userId}</if>
+        <if test="userName != null">AND user_name LIKE CONCAT('%', #{userName}, '%')</if>
+        <if test="userPosition != null and userPosition != ''">AND user_position = #{userPosition}</if>
         ORDER BY user_id DESC
         LIMIT #{skip}, #{size}
     </select>
-
-
 
 
     <!--2) 사원 관리 페이지 & 내 계정 페이지 : 하나의 사원 번호로 사원 정보 조회
         1. 검색 조건
             - 사원 번호
     -->
-    <select id="selectUserById" resultMap="UserLoginResultMap" parameterType="lcw.lcw2_back.domain.user2.Login">
-
+    <!-- 사원 번호로 사용자 조회 -->
+    <select id="selectUserById" resultMap="UserResultMap" parameterType="String">
         SELECT *
         FROM user
         WHERE user_id = #{userId}
-
     </select>
-
-
 
 
     <!--3) 내 계정 페이지 : 회원 정보 수정하기
@@ -74,74 +64,84 @@
             - 이메일
             - 전화번호
     -->
-
-    <update id="updateUserInfo" parameterType="lcw.lcw2_back.domain.user2.User">
+    <!-- 사용자 정보 수정 -->
+    <update id="updateUserInfo" parameterType="lcw.lcw2_back.domain.user.User">
         UPDATE user
         SET
-            user_pw = #{login.userPw},    <!-- User 객체의 login 필드 안의 userPw -->
-            user_email = #{userEmail},     <!-- User 객체의 userEmail -->
-            user_contact = #{userContact}, <!-- User 객체의 userContact -->
-            mod_date = now()
-        WHERE user_id = #{login.userId}   <!-- User 객체의 login 필드 안의 userId -->
+            user_pw = #{userPw},
+            user_email = #{userEmail},
+            user_contact = #{userContact}
+        WHERE user_id = #{userId}
     </update>
-
 
 
 
     <!--4) 회원 관리 페이지 : 회원의 계정 상태를 사원-> 비사원 으로 변경    -->
-    <update id="updateUserStatus" parameterType="lcw.lcw2_back.domain.user2.Login">
+    <!-- 사용자 상태 업데이트 -->
+    <update id="updateUserStatus" parameterType="java.util.Map">
         UPDATE user
-        SET
-            user_status = #{userStatus},
-            mod_date = now()
+        SET user_status = #{userStatus}
         WHERE user_id = #{userId}
-
     </update>
 
 
 
-    <!--5) Login 객체만 가져오기-->
-    <select id="getLoginVo" resultType="lcw.lcw2_back.domain.user2.Login" parameterType="String">
-        SELECT
-            user_id,
-            user_pw,
-            user_role,
-            user_status
+    <!--5) 회원 객체 저장하기-->
+    <!-- 새 사용자 등록 -->
+    <insert id="insertNewUser" parameterType="lcw.lcw2_back.domain.user.User">
+        INSERT INTO user (
+        user_id,
+        user_pw,
+        user_position,
+        user_status,
+        storage_id,
+        user_name,
+        user_email,
+        user_contact,
+        user_birth,
+        user_profile
+        ) VALUES (
+        #{userId},
+        #{userPw},
+        #{userPosition},  <!-- Role을 String으로 저장 -->
+        #{userStatus},
+        #{storageId},
+        #{userName},
+        #{userEmail},
+        #{userContact},
+        #{userBirth},
+        #{userProfile}
+        )
+    </insert>
+
+
+
+    <!--사용자 프로필 저장하기-->
+    <update id="updateUserProfile" parameterType="java.util.Map">
+        UPDATE user
+        SET user_profile = #{userProfile}
+        WHERE user_id = #{userId}
+    </update>
+
+
+
+    <!--사용자 프로필 가져오기-->
+    <select id="getUserProfileUuid" parameterType="String">
+        SELECT user_profile
         FROM user
         WHERE user_id = #{userId}
-
     </select>
 
 
 
-    <!--6) 회원 객체 저장하기-->
-    <insert id="insertNewUser" parameterType="lcw.lcw2_back.domain.user2.User">
-        INSERT INTO user (
-            user_id,
-            user_pw,
-            user_role,
-            user_status,
-            storage_id,
-            user_name,
-            user_email,
-            user_contact,
-            user_birth,
-            reg_date,
-            mod_date
-        ) VALUES (
-            #{login.userId},
-            #{login.userPw},
-            #{login.userRole},
-            #{login.userStatus},
-            #{storageId},
-            #{userName},
-            #{userEmail},
-            #{userContact},
-            #{userBirth},
-            #{regDate},  -- reg_date는 현재 시간으로 설정
-            NOW()   -- mod_date도 현재 시간으로 설정
-        )
-    </insert>
+    <!--사용자 프로필 삭제하기-->
+    <update id="deleteUserProfileUuid" parameterType="String">
+        UPDATE user
+        SET user_profile = NULL
+        WHERE user_id = #{userId}
+    </update>
+
+
 
 
 </mapper>
