@@ -213,7 +213,7 @@ export default function LayoutPage(props) {
                 {notices.map((el) => {
                   // JSON 문자열을 파싱해서 실제 객체로 변환
 
-                  const parsedData = el.data ? JSON.parse(el.data) : null;
+                  const parsedData = JSON.parse(el.data);
 
                   console.log("통지값이 대체 뭔지", parsedData);
 

@@ -18,7 +18,6 @@ public class NotificationController {
 
     @GetMapping(value = "/connect", produces = "text/event-stream")
     public ResponseEntity<SseEmitter> sseConnect(@RequestHeader(value=JwtTokenProvider.ACCESS_HEADER_STRING, required=false)String token){
-        System.out.println(token);
         if(token==null) return ResponseEntity.internalServerError().build();
 
         SseEmitter emitter = notificationService.connectSSE(jwtTokenProvider.getUserId(token.substring(7)));
