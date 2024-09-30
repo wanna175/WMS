@@ -1,8 +1,12 @@
 import { Layout, theme } from "antd";
 const { Header } = Layout;
 import styled from "@emotion/styled";
-import { UserOutlined, BellOutlined } from "@ant-design/icons";
+import { UserOutlined, BellOutlined, BellFilled } from "@ant-design/icons";
+import themes from "../../styles/theme";
+import { Breadcrumb } from "antd";
+
 const Wrapper = styled.div`
+  height: 100%;
   font-weight: bold;
   display: flex;
   flex-direction: row;
@@ -22,24 +26,26 @@ export default function LayoutHeader(props) {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
   return (
     <Header
       style={{
         padding: 0,
         background: colorBgContainer,
-        borderRadius: borderRadiusLG,
-        margin: "5px 16px",
+        height: "6vh",
+        backgroundColor: themes.colors.glbWhite,
       }}
     >
       <Wrapper>
-        <Item>WMS</Item>
         <Item>
-          <UserOutlined onClick={onClickMyPage} />
+          {props.noticeOpen ? <BellFilled onClick={props.showNotice} /> : <BellOutlined onClick={props.showNotice} />}
         </Item>
         <Item>
-          <BellOutlined onClick={props.showLoading} />
+          <UserOutlined onClick={props.showProfile} />
         </Item>
       </Wrapper>
     </Header>
   );
 }
+
+

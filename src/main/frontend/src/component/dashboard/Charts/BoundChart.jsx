@@ -103,7 +103,7 @@ export default function BoundChart(props) {
   };
 
   return (
-    <div style={{flexGrow: "1"}}>
+    <div style={{flexGrow: "1", height: "30vh", padding: "16px"}}>
       <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
     </div>
   );

@@ -14,6 +14,7 @@ const theme = {
     },
     borders: {
         greyBorder:  "solid 1px rgb(217,217,217)" ,
-    }
+    },
 }
+
 export default theme;

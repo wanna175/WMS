@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import axios from "axios";
+import theme from "../../../styles/theme";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -117,43 +118,43 @@ export default function LineChart() {
 
   // 버튼 클릭 시 색상 변경을 위한 CSS 클래스
   const leftButtonStyle = (option) => ({
-    backgroundColor: selectedOption === option ? "#4CAF50" : "#f0f0f0",
+    backgroundColor: selectedOption === option ? theme.colors.glbOrange : theme.colors.glbGrey,
     color: selectedOption === option ? "#fff" : "#000",
-    padding: "10px 20px",
+    padding: "8px 16px",
     margin: "10px 0px 0px 10px",
     cursor: "pointer",
     border: "none",
-    borderRadius: "20px 0px 0px 20px",
+    borderRadius: "16px 0px 0px 16px",
     fontSize: "12px",
   });
 
   const middleButtonStyle = (option) => ({
-    backgroundColor: selectedOption === option ? "#4CAF50" : "#f0f0f0",
+    backgroundColor: selectedOption === option ? theme.colors.glbOrange : theme.colors.glbGrey,
     color: selectedOption === option ? "#fff" : "#000",
-    padding: "10px 20px",
+    padding: "8px 16px",
     cursor: "pointer",
-    borderRight: "solid 1px #e0e0e0",
-    borderLeft: "solid 1px #e0e0e0",
+    borderRight: "solid 1px #d0d0d0",
+    borderLeft: "solid 1px #d0d0d0",
     borderTop: "none",
     borderBottom: "none",
     fontSize: "12px",
   });
 
   const rightButtonStyle = (option) => ({
-    backgroundColor: selectedOption === option ? "#4CAF50" : "#f0f0f0",
+    backgroundColor: selectedOption === option ? theme.colors.glbOrange : theme.colors.glbGrey,
     color: selectedOption === option ? "#fff" : "#000",
-    padding: "10px 20px",
+    padding: "8px 16px",
     cursor: "pointer",
     border: "none",
-    borderRadius: "0px 20px 20px 0px",
+    borderRadius: "0px 16px 16px 0px",
     fontSize: "12px",
   });
 
   return (
-    <div>
+    <div style={{ width: "100%"}}>
       {/* 입고, 출고, 전체 버튼 */}
-      <div style={{display: "flex", justifyContent: "space-between", height: "5vh"}}>
-        <div>
+      <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+        <div style={{fontWeight: "bold", fontSize: "18px", alignContent: "center", marginLeft: "12px"}}>
           {selectedOption + " 재고 추이"}
         </div>
         <div>
@@ -180,7 +181,7 @@ export default function LineChart() {
         </div>
       </div>
       {/* 차트 */}
-      <div style={{width: "100%", height: "35vh"}}>
+      <div style={{width: "100%", height: "35vh", padding: "12px"}}>
         {inDataset && <Line data={inDataset} options={options} />}
       </div>
     </div>

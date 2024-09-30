@@ -32,44 +32,5 @@ import axios from "axios";
 */
 
 export default function Dashboard(props) {
-  const [inReqForWeek, setInReqForWeek] = useState();
-  const [inCompForWeek, setInCompForWeek] = useState();
-  const [inReqForMonth, setInReqForMonth] = useState();
-  const [inProcForMonth, setInProcForMonth] = useState();
-  const [inCompForMonth, setInCompForMonth] = useState();
-  const [outReqForWeek, setOutReqForWeek] = useState();
-  const [outCompForWeek, setOutCompForWeek] = useState();
-  const [outReqForMonth, setOutReqForMonth] = useState();
-  const [outProcForMonth, setOutProcForMonth] = useState();
-  const [outCompForMonth, setOutCompForMonth] = useState();
-  const [invenTrend, setInvenTrend] = useState([]);
-
-  // 최근 7일 입고 그래프 데이터셋 초기화
-  
-  // const lossDataset = async () => {
-  //   try {
-  //     const response = await axios.get("http://localhost:8080/api/lossData");
-  //     console.log(response.data);
-  //     setLoss(response.data);
-  //     setUsage();
-  //     setStorageArea();
-  //     setInReqForWeek();
-  //     setInCompForWeek();
-  //     setInReqForMonth();
-  //     setInProcForMonth();
-  //     setInCompForMonth();
-  //     setOutReqForWeek();
-  //     setOutCompForWeek();
-  //     setOutReqForMonth();
-  //     setOutProcForMonth();
-  //     setOutCompForMonth();
-  //   } catch (error) {
-  //     console.log('에러');
-  //   } finally {
-  //     return loss;
-  //   }
-  // }
-
-  return <DashboardUI
-  />;
+  return <DashboardUI/>;
 }

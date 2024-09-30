@@ -1,11 +1,11 @@
 /* 기본 토글 버튼 배경색 변경 */
 .ant-layout-sider-trigger {
-    background-color: #1890ff; /* 파란색 배경 */
+    background-color: rgb(245, 120, 35); /* 파란색 배경 */
     color: black; /* 텍스트 색상 */
   }
   
   /* 마우스 호버 시 배경색 변경 */
   .ant-layout-sider-trigger:hover {
-    background-color: #40a9ff; /* 더 밝은 파란색으로 변경 */
+    background-color: rgb(245, 120, 35); /* 더 밝은 파란색으로 변경 */
   }
   

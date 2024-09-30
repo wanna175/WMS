@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Divider, Tabs ,Table } from 'antd';
+import { Divider, Tabs ,Table, Flex } from 'antd';
+import * as H from "../../styles/pageStyles";
 
 const onChange = (key) => {
   console.log(key);
@@ -51,22 +52,13 @@ const data = [
   },
   {
     key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
+    name: '이효승',
+    userId: '960304',
+    email: 'dlgytmd5468@naver.com',
+    address: '강남구 삼성동',
+    role: '사원',
   },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Disabled User',
-    age: 99,
-    address: 'Sydney No. 1 Lake Park',
-  },
+  
 ];
 
 // rowSelection object indicates the need for row selection
@@ -76,17 +68,24 @@ const rowSelection = {
   },
   getCheckboxProps: (record) => ({
     disabled: record.name === 'Disabled User',
+    disabled: record.name === 'User',
     // Column configuration not to be checked
     name: record.name,
   }),
 };
+
+const onMenuClick = (e) => {
+  console.log('click', e);
+};
+
+
 const App = () => {
+
   const [selectionType, setSelectionType] = useState('checkbox');
   return (
     <div>
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-      <Divider />
-      <Table
+      <H.Htable
         rowSelection={{
           type: selectionType,
           ...rowSelection,

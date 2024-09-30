@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.crypto.SecretKey;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -74,7 +75,7 @@ class JwtTokenProviderTest {
         String userId = "qwe541";
         Role role = Role.MANAGER;
         authService.signIn(new SignInRequest(userId,null,"1234","고안나",
-                new Date(),"jh5045@naver.com","01022222"));
+                LocalDate.now(),"jh5045@naver.com","01022222"));
 
 
         //when,then

@@ -6,6 +6,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public interface NotificationService {
     //로그인시 sse 연결
     public SseEmitter connectSSE(String userId);
+    //sse 연결 해제
+    public void closeSSEConnect(String userId);
     //통지보내기
     public void send(String receivedUserId, NotificationType notificationType,String content);
     //받은 통지 읽음 표시

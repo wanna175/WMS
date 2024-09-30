@@ -112,7 +112,12 @@ export default function UsageChart(props) {
 
   return (
     <div style={{width: "100%", height:"100%"}}>
-      <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
+      <div style={{fontWeight: "bold", fontSize: "18px", marginLeft: "12px", height: "5vh"}}>
+        재고 추이
+      </div>
+      <div style={{width: "100%", height: "35vh"}}>
+        <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
+      </div>
     </div>
   );
 }

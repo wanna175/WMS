@@ -18,6 +18,7 @@ const TokenContext = createContext(initialState);
 const tokenReducer = (state, action) => {
   switch (action.type) {
     case "SET_TOKENS":
+      console.log("action" + action);
       if (typeof window !== "undefined") {
         sessionStorage.setItem("accessToken", action.payload.accessToken);
         sessionStorage.setItem("refreshToken", action.payload.refreshToken);

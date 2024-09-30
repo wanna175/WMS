@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Log4j2
 public class TestChartController {
 
   @GetMapping("/api/lossData")
@@ -80,7 +81,7 @@ public class TestChartController {
       map.put("상품" + i, list);
     }
 
-    System.out.println(map);
+    log.info("입고 : " + map);
 
     return map;
   }
@@ -97,7 +98,7 @@ public class TestChartController {
       map.put("상품" + i, list);
     }
 
-    System.out.println(map);
+    log.info("출고 : " + map);
 
     return map;
   }
@@ -114,7 +115,7 @@ public class TestChartController {
       map.put("상품" + i, list);
     }
 
-    System.out.println(map);
+    log.info("전체 : " + map);
 
     return map;
   }
