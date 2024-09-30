@@ -3,6 +3,7 @@ package lcw.lcw2_back.controller;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import lcw.lcw2_back.auth.JwtTokenProvider;
+import lcw.lcw2_back.domain.notification.NotificationType;
 import lcw.lcw2_back.service.notification.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -36,8 +37,9 @@ public class TestHelloWorldController {
     }
     @GetMapping(value = "/api/test/notice", produces = "text/event-stream")
     @ResponseStatus(HttpStatus.OK)
-    public SseEmitter sseConnect(@RequestParam(value = "userId" , defaultValue = "0")String userId){
-        return notificationService.connectSSE(userId);
+    public void sseSendTest(@RequestParam(value = "userId" , defaultValue = "0")String userId){
+        System.out.println("알림 요청이 왔어용!");
+        notificationService.send("admin", NotificationType.MEMBER,"알림이 도착했습니다.");
     }
     @GetMapping("api/test/headerToken")
     public ResponseEntity<?> testTokenHeader(HttpServletRequest httpServletRequest){

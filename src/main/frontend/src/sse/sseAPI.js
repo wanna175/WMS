@@ -1,15 +1,11 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useEffect, useContext, createContext } from "react";
 import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
 import { TokenContext } from "../axios/TokenContext";
-// Context 생성
-const SSEContext = createContext();
-
-export const SSEProvider = ({ children }) => {
-  const [events, setEvents] = useState([]);
-  const { state, dispatch } = useContext(TokenContext);
-
+export default function Notifications(props) {
+  const { state } = useContext(TokenContext);
   useEffect(() => {
     const EventSource = EventSourcePolyfill || NativeEventSource;
+    // EventSource 연결 설정 (개별 SSE 연결)
     const eventSource = new EventSource(
       "http://localhost:8080/api/notification/connect",
       {
@@ -19,28 +15,24 @@ export const SSEProvider = ({ children }) => {
       }
     );
 
+    // 서버로부터 오는 이벤트 처리
     eventSource.onmessage = (event) => {
-      console.log("이벤트 : ", event);
-      const newEvent = event.data;
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
-      console.log("새 이벤트 수신:", newEvent);
+      if (event.data !== "dummy") {
+        props.setNotices((prev) => [...prev, event]);
+      }
     };
 
+    // 에러 처리
     eventSource.onerror = (err) => {
-      console.error("SSE 에러:", err);
-      eventSource.close();
+      console.error("SSE 연결 에러:", err);
+      eventSource.close(); // 에러 발생 시 연결 종료
     };
 
-    // 언마운트 시 연결 해제
+    // 컴포넌트 언마운트 시 SSE 연결 해제
     return () => {
       eventSource.close();
     };
-  }, []);
+  }, []); // 빈 배열을 두 번째 인자로 전달하면, 컴포넌트가 마운트될 때 한 번만 실행
 
-  return <SSEContext.Provider value={events}>{children}</SSEContext.Provider>;
-};
-
-// Context에서 SSE 이벤트를 가져오는 Hook
-export const useSSE = () => {
-  return useContext(SSEContext);
-};
+  return <></>;
+}

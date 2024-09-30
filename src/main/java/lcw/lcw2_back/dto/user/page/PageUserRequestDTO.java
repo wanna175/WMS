@@ -24,7 +24,7 @@ public class PageUserRequestDTO {
     private String userId; //검색조건 : 사원번호
     private String userName; //검색조건 : 사원이름
     private String userPosition; //검색조건 : 직책
-    private String userStatus; //0, 1, 2 : 미승인, 비사원, 사원
+    private String userStatus = "1"; //0, 1, 2 : 미승인, 비사원, 사원
 
     public Pageable getPageable(String...props) {
         return PageRequest.of(this.page -1, this.size, Sort.by(props).descending());

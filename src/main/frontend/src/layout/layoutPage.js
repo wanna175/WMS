@@ -11,7 +11,8 @@ import {
   ExportOutlined,
   TeamOutlined,
   SettingOutlined,
-  CloseOutlined
+  CloseOutlined,
+  DesktopOutlined,
 } from "@ant-design/icons";
 import themes from "../styles/theme";
 import { useState, useRef, useEffect } from "react";
@@ -19,7 +20,8 @@ import Notice from "../notice/notice.container";
 import * as N from "./NoticeStyle";
 import * as P from "./profile/ProfileStyle";
 import ProfileItem from "./profile/ProfileItem";
-
+import Notifications from "../sse/sseAPI";
+import { SSEContext } from "../sse/sseAPI";
 const { Content } = Layout;
 const LOGIN_PAGE = [
   "/login",
@@ -42,6 +44,8 @@ export default function LayoutPage(props) {
   const [profileOpen, setProfileOpen] = useState(false);
   const modalRef = useRef();
 
+  //sse 관련 변수
+  const [events, setEvents] = useState([]);
   //////////////////////////////나중에 다른파일로 바꿔서 import합시다.
   const pageMap = {
     "/wms/dashboard": ["대시보드", "대시보드"],
@@ -74,7 +78,10 @@ export default function LayoutPage(props) {
     ]),
     getItem("회원관리", "sub1", <TeamOutlined />, [
       getItem(pageMap["/wms/member"][1], "/wms/member"),
-      getItem(pageMap["/wms/member/newuserrequest"][1], "/wms/member/newuserrequest"),
+      getItem(
+        pageMap["/wms/member/newuserrequest"][1],
+        "/wms/member/newuserrequest"
+      ),
     ]),
     getItem("창고관리", "sub2", <TeamOutlined />, [
       getItem("창고조회", "/wms/warehouse"),
@@ -97,7 +104,7 @@ export default function LayoutPage(props) {
     getItem("운송장관리", "sub6", <DesktopOutlined />, [
       getItem("운송장조회", "/wms/waybill"),
       getItem("운송장수정", "/wms/modifywaybill"),
-    ])
+    ]),
   ];
   /////////////////////////////여기 위에 지저분한거 나중에 다른파일로 뺍시다.리팩토링필요
   const {
@@ -109,39 +116,20 @@ export default function LayoutPage(props) {
     router.push(key);
   };
 
-
   // 알림 창 띄우기
-  const showNotice = async () => {
+  const showNotice = () => {
     setNoticeOpen(true);
     setLoading(true);
-    try {
-      const response = await axios.get("http://localhost:8080/api//test/notice");
-      setNotices(response.data); // notices 상태 업데이트
-    } catch (error) {
-      setNotices([
-        { date: "2022", title: "통지", content: "내용", checked: false },
-        { date: "2023", title: "통지", content: "내용", checked: true },
-        { date: "2024", title: "통지", content: "내용", checked: true },
-        { date: "2021", title: "통지", content: "내용", checked: false },
-        { date: "2022", title: "통지", content: "내용", checked: false },
-        { date: "2022", title: "통지", content: "내용", checked: false },
-        { date: "2022", title: "통지", content: "내용", checked: false },
-        { date: "2022", title: "통지", content: "내용", checked: false },
-        { date: "2022", title: "통지", content: "내용", checked: false },
-        { date: "2022", title: "통지", content: "내용", checked: false },
-        { date: "2022", title: "통지", content: "내용", checked: false },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  }
+  };
 
   // 프로필 창 띄우기
   const showProfile = async () => {
     setProfileOpen(true);
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8080/api//test/profile");
+      const response = await axios.get(
+        "http://localhost:8080/api//test/profile"
+      );
       setProfile(response.data);
     } catch (error) {
       setProfile({
@@ -152,8 +140,7 @@ export default function LayoutPage(props) {
     } finally {
       setLoading(false);
     }
-  }
-
+  };
 
   // 바깥 클릭 감지
   useEffect(() => {
@@ -173,7 +160,6 @@ export default function LayoutPage(props) {
     };
   }, []);
 
-
   return (
     <>
       <Layout
@@ -187,49 +173,69 @@ export default function LayoutPage(props) {
         <Layout
           style={{
             background: themes.colors.glbWhite,
-            border: "none"
+            border: "none",
           }}
         >
           {!isLoginPage && (
-            <LayoutHeader
-              router={router}
-              setPage={setPage}
-              setDetail={setDetail}
-              noticeOpen={noticeOpen}
-              showNotice={showNotice}
-              profileOpen={profileOpen}
-              showProfile={showProfile}
-              pageMap={pageMap}
-            />
+            <>
+              <Notifications setNotices={setNotices} notices={notices} />
+              <LayoutHeader
+                router={router}
+                setPage={setPage}
+                setDetail={setDetail}
+                noticeOpen={noticeOpen}
+                showNotice={showNotice}
+                profileOpen={profileOpen}
+                showProfile={showProfile}
+                pageMap={pageMap}
+              />
+            </>
           )}
 
           {/* 알림 창 */}
-          {noticeOpen && <N.NoticeModal ref={modalRef}>
-            <div style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              borderBottom: "solid 0.5px rgb(217, 217, 217)",
-              padding: "15px",
-              textAlign: "center",
-              fontSize: "18px"
-            }}>
-              알림
-              <SettingOutlined />
-            </div>
-            <div style={{ padding: "0px 15px 15px 15px", overflow: "auto" }}>
-              {notices.map((el) => (
-                <Notice id={el.id} el={el} router={router} />
-              ))}
-            </div>
-          </N.NoticeModal>}
+          {noticeOpen && (
+            <N.NoticeModal ref={modalRef}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  borderBottom: "solid 0.5px rgb(217, 217, 217)",
+                  padding: "15px",
+                  textAlign: "center",
+                  fontSize: "18px",
+                }}
+              >
+                알림
+                <SettingOutlined />
+              </div>
+              <div style={{ padding: "0px 15px 15px 15px", overflow: "auto" }}>
+                {notices.map((el) => {
+                  // JSON 문자열을 파싱해서 실제 객체로 변환
+
+                  const parsedData = el.data ? JSON.parse(el.data) : null;
+
+                  console.log("통지값이 대체 뭔지", parsedData);
+
+                  return (
+                    <Notice
+                      key={parsedData.notification_id} // 각 요소에 고유한 key를 설정
+                      id={parsedData.notification_id} // 파싱된 데이터에서 id 추출
+                      el={parsedData} // 파싱된 데이터 전체를 el로 전달
+                      router={router} // 기존 router 값 그대로 전달
+                    />
+                  );
+                })}
+              </div>
+            </N.NoticeModal>
+          )}
 
           {/* 프로필 창 */}
-          {profileOpen && <P.ProfileModal ref={modalRef}>
-            <ProfileItem
-              profile={profile}
-            />
-          </P.ProfileModal>}
+          {profileOpen && (
+            <P.ProfileModal ref={modalRef}>
+              <ProfileItem profile={profile} />
+            </P.ProfileModal>
+          )}
 
           <Content
             style={{
@@ -241,10 +247,20 @@ export default function LayoutPage(props) {
               separator=">"
               style={{
                 margin: "16px 0",
-                height: "8vh"
+                height: "8vh",
               }}
             >
-              {!isLoginPage && <h1 style={{ color: themes.colors.glbBlack, fontSize: "24px", paddingLeft: "16px" }}>{detail}</h1>}
+              {!isLoginPage && (
+                <h1
+                  style={{
+                    color: themes.colors.glbBlack,
+                    fontSize: "24px",
+                    paddingLeft: "16px",
+                  }}
+                >
+                  {detail}
+                </h1>
+              )}
             </Breadcrumb>
             <div
               style={{
