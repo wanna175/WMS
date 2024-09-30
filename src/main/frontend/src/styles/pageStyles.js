@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { SearchOutlined } from '@ant-design/icons';
 import theme from '../styles/theme';
-import { Table, Button, Select, Calendar, Modal } from 'antd';
+import { Table, Button, Select, Calendar, Modal, Tabs } from 'antd';
 
 // Table 컴포넌트를 styled-components로 스타일링
 //테이블 스타일링
@@ -50,6 +50,7 @@ export const HButtonWrapper = styled.div`
   display: flex;                    // 가로로 요소를 배치
   align-items: center;              // 세로로 가운데 정렬
   justify-content: flex-end;        // 버튼을 오른쪽으로 정렬
+  margin-right: 25px;
 `;
 
 export const HButtonDefault = styled(Button)`
@@ -57,13 +58,18 @@ export const HButtonDefault = styled(Button)`
   justify-content: center;      // 버튼의 내용을 수평으로 가운데 정렬
   padding: 8px 16px;            // 버튼의 내부 여백을 설정
   font-size: 16px;              // 버튼 텍스트의 크기를 16px로 설정
-  background-color: ${theme.colors.glbLightOrange};    // 버튼의 배경색을 설정
-  color: white;                 // 텍스트 색상을 흰색으로 설정
+  background-color: ${theme.colors.glbOrange};    // 버튼의 배경색을 설정
+  color: white !important;                 // 텍스트 색상을 흰색으로 설정
   border: none;                 // 버튼의 테두리를 없애기
     cursor: pointer;             // 커서는 포인터
   &:hover {                     // hover 상태에서 버튼의 스타일 변경->적용이안됨
-    background-color: rgb(230, 70, 20)};
+    background-color: rgb(230, 70, 20) !important;
     }    // hover 시 배경색을 진한 오렌지로 변경
+
+  div {
+    background-color: ${theme.colors.glbOrange} !important;    // 버튼의 배경색을 설정
+    background-color: ${theme.colors.glbWhite} !important;
+  }
 `;
 
 export const HButtonFail = styled(Button)`

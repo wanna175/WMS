@@ -24,6 +24,7 @@ public class PageUserRequestDTO {
     private String userId; //검색조건 : 사원번호
     private String userName; //검색조건 : 사원이름
     private String userPosition; //검색조건 : 직책
+    @Builder.Default
     private String userStatus = "1"; //0, 1, 2 : 미승인, 비사원, 사원
 
     public Pageable getPageable(String...props) {

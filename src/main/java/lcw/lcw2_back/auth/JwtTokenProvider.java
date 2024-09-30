@@ -20,7 +20,7 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    public final static long ACCESS_TOKEN_TIME = 1000*60*30;//30min
+    public final static long ACCESS_TOKEN_TIME = 1000*60*60*60;//30min
     public final static String ACCESS_PREFIX_STRING = "Bearer ";
     public final static String ACCESS_HEADER_STRING = "Authorization";
     public final static String REFRESH_HEADER_STRING = "RefreshToken";

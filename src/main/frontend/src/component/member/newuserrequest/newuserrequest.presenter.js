@@ -79,9 +79,15 @@ const App = () => {
         }}
         columns={columns}
         dataSource={data}
-
-        
       />
+      <H.HButtonWrapper>
+        <H.HButtonDefault style={{margin: "2px"}}>
+          승인
+        </H.HButtonDefault>
+        <H.HButtonDefault>
+          미승인
+        </H.HButtonDefault>
+      </H.HButtonWrapper>
     </div>
   );
 };

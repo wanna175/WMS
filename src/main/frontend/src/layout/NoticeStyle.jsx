@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import theme from "../styles/theme";
 
 export const NoticeModal = styled.div`
+  z-index: 100;
   position: fixed;
   top: 0;
   right: 0;

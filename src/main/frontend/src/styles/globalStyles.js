@@ -96,4 +96,35 @@ export const globalStyles = css`
     font-family: "myFont";
     src: url("/fonts/NanumSquareRoundR.ttf");
   }
+
+  /* 테이블 설정 */
+  .ant-tabs-tab-btn[aria-selected="true"] {
+    color: ${theme.colors.glbOrange} !important;
+  }
+
+  .ant-tabs-tab-btn[aria-selected="false"]:hover {
+      color: ${theme.colors.glbOrange} !important;
+  }
+
+  .ant-tabs-ink-bar {
+    background-color: ${theme.colors.glbOrange} !important;
+  }
+  
+  .ant-pagination-item {
+    border-color: ${theme.colors.glbOrange} !important;
+  }
+
+  .ant-pagination-item {
+    border : none !important;
+  }
+
+  .ant-pagination-item>a {
+    color: ${theme.colors.glbBlack} !important;
+  }
+
+  .ant-pagination-item-active>a {
+    border: solid 1px ${theme.colors.glbOrange};
+    border-radius: 6px;
+    color: ${theme.colors.glbOrange} !important;
+  }
 `;

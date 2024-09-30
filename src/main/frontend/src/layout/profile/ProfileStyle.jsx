@@ -32,9 +32,9 @@ export const ProfileCard = styled.div`
 // 카드 상단 헤더 스타일
 export const ProfileHeader = styled.div`
   height: 98px;
-  background-color: #e6f0ff;
+  background-color: ${theme.colors.glbOrange};
+  color: white;
   padding-top: 32px;
-  padding-bottom: 35px;
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -43,7 +43,7 @@ export const ProfileHeader = styled.div`
 // 카드 본문 스타일
 export const ProfileBody = styled.div`
   text-align: center;
-  padding: 20px;
+  padding-top: 40px;
 `;
 
 // 프로필 이미지 스타일
@@ -54,7 +54,7 @@ export const ProfileImg = styled.div`
 
   width: 70px;
   height: 70px;
-  background-color: #b0c4de;
+  background-color: ${theme.colors.glbDarkOrange};
   border-radius: 50%;
   margin: 0 auto;
   display: flex;
@@ -86,14 +86,24 @@ export const ProfileIcons = styled.div`
   display: flex;
   justify-content: center;
   gap: 15px;
-  margin-top: 10px;
+  margin-top: 25px;
 `;
 
 // 아이콘 스타일
-export const Icon = styled.span`
+export const Icon = styled.button`
+  display: flex;
   font-size: 24px;
-  color: #4b6b8b;
-  background-color: #e6f0ff;
-  padding: 10px;
+  color: white;
+  background-color: ${theme.colors.glbOrange};
   border-radius: 50%;
+  justify-content: center;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  
+  // hover 속성 추가
+  &:hover {
+    background-color: ${theme.colors.glbDarkOrange};
+  }
 `;
+

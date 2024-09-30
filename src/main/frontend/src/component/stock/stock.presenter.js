@@ -66,7 +66,7 @@ const App = () => {
     <>
       {/* H.HSelectWrapper로 Select와 타이틀들을 감싸는 부분 */}
       <H.HSelectWrapper>
-      <S.Title>품목</S.Title> 
+        <S.Title>품목</S.Title>
         <H.HSelect
           showSearch
           placeholder="품목을 선택해주세요"
@@ -79,7 +79,7 @@ const App = () => {
             { value: 'tom', label: 'Tom' },
           ]}
         />
-        
+
         <S.Title>창고별</S.Title>
         <H.HSelect
           showSearch
@@ -94,15 +94,15 @@ const App = () => {
           ]}
         />
       </H.HSelectWrapper>
-            <H.HButtonWrapper>
-          <H.HButtonDefault type="primary" 
+      <H.HButtonWrapper>
+        <H.HButtonDefault type="primary"
           icon={<SearchOutlined />} >
-            재고수정
-          </H.HButtonDefault>
-          </H.HButtonWrapper>
+          재고수정
+        </H.HButtonDefault>
+      </H.HButtonWrapper>
 
 
-        
+
 
       {/* Divider는 H.HSelectWrapper 밖에 둡니다 */}
       <Divider />

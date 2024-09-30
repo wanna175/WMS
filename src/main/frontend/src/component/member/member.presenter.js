@@ -83,7 +83,7 @@ const App = () => {
 
   const [selectionType, setSelectionType] = useState('checkbox');
   return (
-    <div>
+    <form>
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
       <H.Htable
         rowSelection={{
@@ -93,7 +93,7 @@ const App = () => {
         columns={columns}
         dataSource={data}
       />
-    </div>
+    </form>
   );
 };
 export default App;

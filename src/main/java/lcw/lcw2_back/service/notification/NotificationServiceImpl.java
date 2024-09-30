@@ -29,7 +29,7 @@ public class NotificationServiceImpl implements NotificationService{
             emitter = emitterRepository.save(emitterId, new SseEmitter(-1L));
             emitter.onCompletion(()->{
                 updateNotificationTableByUserId(userId);
-                emitterRepository.deleteById(emitterId);
+                //emitterRepository.deleteById(emitterId);
                 //로그아웃이나 타임아웃시에 디비접근해서 한꺼번에 읽음 처리
             });
             emitter.onTimeout(()->{
@@ -47,12 +47,15 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
 
+    //로그아웃일때 객체를 삭제하자.
     @Override
     public void closeSSEConnect(String userId){
         SseEmitter sseEmitter = emitterRepository.findEmitterByUserId(userId);
         if (sseEmitter != null) {
             // SSE 연결 해제
             sseEmitter.complete();
+            emitterRepository.deleteById(userId);
+            updateNotificationTableByUserId(userId);
         }
     }
 
