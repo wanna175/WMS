@@ -163,6 +163,10 @@ public class JwtTokenProvider {
         return null;
     }
 
+    public boolean validateToken(String accessToken){
+        AccessToken ret = accessTokenRepository.findTokenByUserId(this.getUserId(accessToken));
+        return ret != null && !ret.getExpiration().before(new Date());
+    }
     public boolean validateRefreshToken(String refreshToken){
 
         RefreshToken ret = refreshTokenRepository.findTokenByUserId(this.getUserId(refreshToken));
@@ -177,6 +181,7 @@ public class JwtTokenProvider {
     //HTTP 요청 헤더에서 토큰 가져오기
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(ACCESS_HEADER_STRING);
+        System.out.println(bearerToken);
         if (bearerToken != null && bearerToken.startsWith(ACCESS_PREFIX_STRING))
             return bearerToken.substring(7);  // "Bearer " 이후의 토큰 값만 가져옴
         return null;

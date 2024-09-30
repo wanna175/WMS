@@ -5,14 +5,21 @@ import LayoutNavigation from "./navigation/navigation";
 import LayoutFooter from "./footer/footer";
 import { Breadcrumb, Layout, theme, Button, Drawer } from "antd";
 import {
-  DesktopOutlined,
-  FileOutlined,
+  InboxOutlined,
   PieChartOutlined,
+  ImportOutlined,
+  ExportOutlined,
   TeamOutlined,
-  UserOutlined,
+  SettingOutlined,
+  CloseOutlined
 } from "@ant-design/icons";
-import { useState } from "react";
+import themes from "../styles/theme";
+import { useState, useRef, useEffect } from "react";
 import Notice from "../notice/notice.container";
+import * as N from "./NoticeStyle";
+import * as P from "./profile/ProfileStyle";
+import ProfileItem from "./profile/ProfileItem";
+
 const { Content } = Layout;
 const LOGIN_PAGE = [
   "/login",
@@ -24,14 +31,20 @@ export default function LayoutPage(props) {
   const router = useRouter();
   const isLoginPage = LOGIN_PAGE.includes(router.asPath);
   const [notices, setNotices] = useState([]);
+  const [profile, setProfile] = useState({});
 
   const [page, setPage] = useState("대시보드");
   const [detail, setDetail] = useState("사원관리");
   const [drawOpen, setDrawOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [noticeOpen, setNoticeOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const modalRef = useRef();
+
   //////////////////////////////나중에 다른파일로 바꿔서 import합시다.
   const pageMap = {
-    "/wms/dashboard": ["대시보드"],
+    "/wms/dashboard": ["대시보드", "대시보드"],
     "/wms/member": ["회원관리", "사원관리"],
     "/wms/member/newuserrequest": ["회원관리", "회원가입요청"],
     "/wms/warehouse": ["창고관리", "창고조회"],
@@ -56,8 +69,10 @@ export default function LayoutPage(props) {
     };
   };
   const items = [
-    getItem("대시보드", "/wms/dashboard", <PieChartOutlined />),
-    getItem("회원관리", "sub1", <UserOutlined />, [
+    getItem("대시보드", "/wms/dashboard", <PieChartOutlined />, [
+      getItem(pageMap["/wms/dashboard"][1], "/wms/dashboard"),
+    ]),
+    getItem("회원관리", "sub1", <TeamOutlined />, [
       getItem(pageMap["/wms/member"][1], "/wms/member"),
       getItem(pageMap["/wms/member/newuserrequest"][1], "/wms/member/newuserrequest"),
     ]),
@@ -94,12 +109,13 @@ export default function LayoutPage(props) {
     router.push(key);
   };
 
-  const showLoading = async () => {
-    setDrawOpen(true);
-    setLoading(true);
 
+  // 알림 창 띄우기
+  const showNotice = async () => {
+    setNoticeOpen(true);
+    setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8080/api/jw");
+      const response = await axios.get("http://localhost:8080/api//test/notice");
       setNotices(response.data); // notices 상태 업데이트
     } catch (error) {
       setNotices([
@@ -108,11 +124,55 @@ export default function LayoutPage(props) {
         { date: "2024", title: "통지", content: "내용", checked: true },
         { date: "2021", title: "통지", content: "내용", checked: false },
         { date: "2022", title: "통지", content: "내용", checked: false },
+        { date: "2022", title: "통지", content: "내용", checked: false },
+        { date: "2022", title: "통지", content: "내용", checked: false },
+        { date: "2022", title: "통지", content: "내용", checked: false },
+        { date: "2022", title: "통지", content: "내용", checked: false },
+        { date: "2022", title: "통지", content: "내용", checked: false },
+        { date: "2022", title: "통지", content: "내용", checked: false },
       ]);
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  // 프로필 창 띄우기
+  const showProfile = async () => {
+    setProfileOpen(true);
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:8080/api//test/profile");
+      setProfile(response.data);
+    } catch (error) {
+      setProfile({
+        id: "숫자일까 문자일까",
+        url: "../../../public/img/gyulobal1.png",
+        name: "김정우",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  // 바깥 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setNoticeOpen(false);
+        setProfileOpen(false);
+      }
+    };
+
+    // 마운트 시 이벤트 리스너 추가
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // 언마운트 시 이벤트 리스너 제거
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
 
   return (
     <>
@@ -124,67 +184,82 @@ export default function LayoutPage(props) {
         {!isLoginPage && (
           <LayoutNavigation onClickNav={onClickNav} items={items} />
         )}
-        <Layout>
+        <Layout
+          style={{
+            background: themes.colors.glbWhite,
+            border: "none"
+          }}
+        >
           {!isLoginPage && (
             <LayoutHeader
               router={router}
               setPage={setPage}
               setDetail={setDetail}
-              showLoading={showLoading}
+              noticeOpen={noticeOpen}
+              showNotice={showNotice}
+              profileOpen={profileOpen}
+              showProfile={showProfile}
               pageMap={pageMap}
             />
           )}
+
+          {/* 알림 창 */}
+          {noticeOpen && <N.NoticeModal ref={modalRef}>
+            <div style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              borderBottom: "solid 0.5px rgb(217, 217, 217)",
+              padding: "15px",
+              textAlign: "center",
+              fontSize: "18px"
+            }}>
+              알림
+              <SettingOutlined />
+            </div>
+            <div style={{ padding: "0px 15px 15px 15px", overflow: "auto" }}>
+              {notices.map((el) => (
+                <Notice id={el.id} el={el} router={router} />
+              ))}
+            </div>
+          </N.NoticeModal>}
+
+          {/* 프로필 창 */}
+          {profileOpen && <P.ProfileModal ref={modalRef}>
+            <ProfileItem
+              profile={profile}
+            />
+          </P.ProfileModal>}
+
           <Content
             style={{
               margin: "0 16px",
+              border: "none",
             }}
           >
             <Breadcrumb
+              separator=">"
               style={{
                 margin: "16px 0",
+                height: "8vh"
               }}
             >
-              {!isLoginPage && <Breadcrumb.Item>{page}</Breadcrumb.Item>}
-              {!isLoginPage && <Breadcrumb.Item>{detail}</Breadcrumb.Item>}
+              {!isLoginPage && <h1 style={{ color: themes.colors.glbBlack, fontSize: "24px", paddingLeft: "16px" }}>{detail}</h1>}
             </Breadcrumb>
             <div
               style={{
-                padding: 24,
+                padding: "0px 0px 0px 0px",
                 minHeight: 500,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
+                background: themes.colors.glbWhite,
+                borderRadius: "50px",
               }}
             >
               {props.children}
             </div>
           </Content>
-          <LayoutFooter />
+          {!isLoginPage && <LayoutFooter />}
         </Layout>
       </Layout>
-      <Drawer
-        closable
-        destroyOnClose
-        title={<p>notice</p>}
-        placement="right"
-        open={drawOpen}
-        loading={loading}
-        onClose={() => {
-          setDrawOpen(false);
-        }}
-      >
-        <Button
-          type="primary"
-          style={{
-            marginBottom: 16,
-          }}
-          onClick={showLoading}
-        >
-          추가작업
-        </Button>
-        {notices.map((el) => (
-          <Notice id={el.id} el={el} router={router} />
-        ))}
-      </Drawer>
     </>
   );
 }

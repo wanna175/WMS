@@ -26,13 +26,13 @@ public class NotificationServiceImpl implements NotificationService{
         SseEmitter emitter = emitterRepository.save(emitterId,new SseEmitter(timeout));
 
         emitter.onCompletion(()->{
-            emitterRepository.deleteById(emitterId);
             updateNotificationTableByUserId(userId);
+            emitterRepository.deleteById(emitterId);
             //로그아웃이나 타임아웃시에 디비접근해서 한꺼번에 읽음 처리
         });
         emitter.onTimeout(()->{
-            emitterRepository.deleteById(emitterId);
             updateNotificationTableByUserId(userId);
+            emitterRepository.deleteById(emitterId);
         });
         updateEventCacheFromNotificationDB(userId);
         //연결시 통지들 cache에 들고온다.
@@ -41,6 +41,16 @@ public class NotificationServiceImpl implements NotificationService{
         String eventId = System.currentTimeMillis()+"@"+userId;
         sendNotification(emitter,eventId,emitterId,"[create SSE Connection] userId : "+userId);
         return emitter;
+    }
+
+
+    @Override
+    public void closeSSEConnect(String userId){
+        SseEmitter sseEmitter = emitterRepository.findEmitterByUserId(userId);
+        if (sseEmitter != null) {
+            // SSE 연결 해제
+            sseEmitter.complete();
+        }
     }
 
     private void sendNotification(SseEmitter emitter,String eventId,String emitterId,Object data){

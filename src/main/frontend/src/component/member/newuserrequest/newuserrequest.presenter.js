@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Divider, Tabs, Table, Button } from 'antd';
+import * as H from "../../../styles/pageStyles";
 
 
 const onChange = (key) => {
@@ -18,7 +19,7 @@ const columns = [
     title: '이름',
     dataIndex: 'name',
     // render: (text) => <a>{text}</a>,
-},
+  },
   {
     title: '사원번호',
     dataIndex: 'userId',
@@ -35,32 +36,23 @@ const columns = [
     title: '직함',
     dataIndex: 'role',
   },
-
 ];
 const data = [
   {
     key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    name: '고재현',
+    userId: '960987',
+    email: 'rhwogus0987@naver.com',
+    address: '강남구 삼성동',
+    role: '대리',
   },
   {
     key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Disabled User',
-    age: 99,
-    address: 'Sydney No. 1 Lake Park',
+    name: '김정우',
+    userId: '010302',
+    email: 'rlawjddn1234@naver.com',
+    address: '강남구 삼성동',
+    role: '팀장',
   },
 ];
 
@@ -80,14 +72,15 @@ const App = () => {
   return (
     <div>
       <Tabs defaultActiveKey='1' items={items} onChange={onChange}/>
-      <Divider />
-      <Table
+      <H.Htable
         rowSelection={{
           type: selectionType,
           ...rowSelection,
         }}
         columns={columns}
         dataSource={data}
+
+        
       />
     </div>
   );

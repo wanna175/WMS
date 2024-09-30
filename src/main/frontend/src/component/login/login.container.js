@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { errorModal } from "../../lib/util";
 import { useState, useContext } from "react";
+import axios from "axios";
 import { useAPI } from "../../axios/useAPI";
 import { TokenContext } from "../../axios/TokenContext";
+
 export default function Login() {
-  const { post } = useAPI();
+  const { get } = useAPI();
   const { dispatch } = useContext(TokenContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,30 +20,34 @@ export default function Login() {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      employeeNumber: "",
+      userId: "",
       password: "",
     },
     mode: "onChange",
   });
 
-  const login = async () => {
+  const login = async (data) => {
     try {
       const loginData = {
-        userId: employeeNumber,
-        password,
+        userId: data.userId,
+        password: data.password,
       };
-      const response = await post("/auth/login", loginData);
-
+      const auth = axios.create({
+        baseURL: "http://localhost:8080",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const response = await auth.post("/auth/login", loginData);
       // 받은 토큰을 전역 상태와 세션 스토리지에 저장
       dispatch({
         type: "SET_TOKENS",
         payload: {
-          accessToken: response.ACCESS_HEADER_STRING,
-          refreshToken: response.REFRESH_HEADER_STRING,
+          accessToken: response.data.Authorization,
+          refreshToken: response.data.RefreshToken,
         },
       });
-
-      console.log(response);
+      console.log("토큰:", response.data.Authorization);
       router.push(`/wms`);
     } catch (error) {
       console.error(
@@ -58,7 +64,7 @@ export default function Login() {
   const onSubmitBoard = async (data) => {
     try {
       console.log(data);
-      login();
+      login(data);
       //rest든 graphql이든 우리 백앤드로 data로 날리는 구간(await)
     } catch (error) {
       if (error instanceof Error) errorModal("fail", error.message);

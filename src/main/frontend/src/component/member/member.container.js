@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { errorModal } from "../../lib/util";
 import { useState,useEffect } from "react";
 import axios from "axios";
+import { useAPI } from "../../../src/axios/useAPI";
 
 
 export default function Member() {
@@ -42,7 +43,8 @@ export default function Member() {
       const fetchData = async () => {
         try {
           // POST 요청으로 userStatus 값을 본문에 포함시킴
-          const response = await axios.post('/api/member/list', { Byte: userStatus });
+
+          const response = (await axios.post('/api/member/list', { Byte: userStatus }));
           setData(response.data);
         } catch (error) {
           console.error('데이터를 가져오는 중 오류 발생:', error);

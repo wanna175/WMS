@@ -1,10 +1,13 @@
 import { useContext } from "react";
 import axios from "axios";
 import { TokenContext } from "./TokenContext";
+import { useRouter } from "next/router";
+//import { useNavigate } from "react-router-dom";
 
 export const useAPI = () => {
   const baseURL = "http://localhost:8080/api";
   const { state, dispatch } = useContext(TokenContext);
+  const router = useRouter();
 
   const api = axios.create({
     baseURL: baseURL,
@@ -17,7 +20,8 @@ export const useAPI = () => {
   api.interceptors.request.use(
     (config) => {
       if (state.accessToken) {
-        config.headers.Authorization = `Bearer ${state.accessToken}`;
+        console.log(state.accessToken);
+        config.headers.Authorization = state.accessToken;
       }
       return config;
     },
@@ -26,14 +30,21 @@ export const useAPI = () => {
     }
   );
 
-  //accessToken 기간만료시 (401) 다시 재발급 요청.
+  //401 error : accessToken 기간만료시 (401) 다시 재발급 요청.
+  //203 error : 토큰이 없음 => 로그인 하지 않음 login page로 리다이렉트
   api.interceptors.response.use(
     (response) => {
+      if (response && response.status === 203) {
+        // 203 에러 발생 시 로그인 페이지로 리다이렉트
+        console.error("Unauthorized, redirecting to login...");
+        router.push("/login");
+        //window.location.href = "/login";
+        return Promise.resolve(null); // 리다이렉트 후 더 이상 응답을 처리하지 않음
+      }
       return response;
     },
     async (error) => {
       const originalRequest = error.config;
-
       if (
         error.response &&
         error.response.status === 401 &&
@@ -42,23 +53,41 @@ export const useAPI = () => {
         originalRequest._retry = true;
         const refreshToken = state.refreshToken;
 
-        // RefreshToken으로 새 AccessToken 발급 요청
-        const response = await axios.post(baseURL + "/auth/refresh", {
-          refreshToken,
-        });
-        const newAccessToken = response.data.accessToken;
+        if (!refreshToken) {
+          // 리프레시 토큰이 없으면 로그인 페이지로 리다이렉트
+          console.error(
+            "리프레시 토큰이 없습니다. 로그인 페이지로 이동합니다."
+          );
+          router.push("/login");
+          return Promise.reject(error);
+        }
+        try {
+          // RefreshToken으로 새 AccessToken 발급 요청
+          const response = await axios.post(
+            "http://localhost:8080/auth/reissue-access-token",
+            {
+              refreshToken,
+            }
+          );
+          const newAccessToken = response.data.accessToken;
+          console.log("newAccessToken : " + newAccessToken);
+          // 새 AccessToken을 Context와 세션 스토리지에 저장
+          dispatch({
+            type: "SET_TOKENS",
+            payload: {
+              accessToken: newAccessToken,
+              refreshToken: state.refreshToken,
+            },
+          });
 
-        // 새 AccessToken을 Context와 세션 스토리지에 저장
-        dispatch({
-          type: "SET_TOKENS",
-          payload: {
-            accessToken: newAccessToken,
-            refreshToken: state.refreshToken,
-          },
-        });
-
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(originalRequest);
+          originalRequest.headers.Authorization = newAccessToken;
+          return api(originalRequest);
+        } catch (error) {
+          console.error("Access Token 재발급 실패:", refreshError);
+          // 재발급 실패 시 로그인 페이지로 이동
+          router.push("/login");
+          return Promise.reject(refreshError);
+        }
       }
 
       return Promise.reject(error);
@@ -68,7 +97,7 @@ export const useAPI = () => {
   const get = async (url, params) => {
     try {
       const response = await api.get(url, { params });
-      return response.data;
+      return response;
     } catch (error) {
       throw error;
     }

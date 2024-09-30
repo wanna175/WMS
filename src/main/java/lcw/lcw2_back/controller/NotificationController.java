@@ -1,5 +1,6 @@
 package lcw.lcw2_back.controller;
 
+import lcw.lcw2_back.auth.JwtTokenProvider;
 import lcw.lcw2_back.service.notification.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,14 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping(value = "/connect", produces = "text/event-stream")
-    public ResponseEntity<SseEmitter> sseConnect(@RequestParam(value = "userId")String userId){
-        SseEmitter emitter = notificationService.connectSSE(userId);
+    public ResponseEntity<SseEmitter> sseConnect(@RequestHeader(value=JwtTokenProvider.ACCESS_HEADER_STRING, required=false)String token){
+        System.out.println(token);
+        if(token==null) return ResponseEntity.internalServerError().build();
+
+        SseEmitter emitter = notificationService.connectSSE(jwtTokenProvider.getUserId(token.substring(7)));
         return ResponseEntity.ok(emitter);
     }
     //아직 결정을 못함...통지를 닫으면 동시에 읽음 처리를 할지...

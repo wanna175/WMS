@@ -24,13 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final NotificationService notificationService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> login(@RequestBody LoginRequest loginRequest) {
@@ -38,12 +37,9 @@ public class AuthController {
         Map<String, String> jwt = new HashMap<>();
         try {
             token = authService.login(loginRequest);
-        } catch (UserIdNotFoundException e) {
+        } catch (UserIdNotFoundException|UserPasswordNotCorrectException e) {
             jwt.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(jwt);
-        } catch (UserPasswordNotCorrectException e) {
-            jwt.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(jwt);
         } catch (UserStatusNotPermissionException e) {
             jwt.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(jwt);
@@ -51,7 +47,6 @@ public class AuthController {
 
         jwt.put(JwtTokenProvider.ACCESS_HEADER_STRING, token.getAccessToken());
         jwt.put(JwtTokenProvider.REFRESH_HEADER_STRING, token.getRefreshToken());
-
         return ResponseEntity.ok(jwt);
 
     }
@@ -73,7 +68,7 @@ public class AuthController {
     public ResponseEntity<String> join(@RequestBody SignInRequest signInRequest) {
         //userService에서 회원정보 저장하기 구현해야함.
         // signInRequest를 디비에 저장하면 되것다.
-        notificationService.send("admin", NotificationType.MEMBER,"새 회원승인 요청");
+        //notificationService.send("admin", NotificationType.MEMBER,"새 회원승인 요청");
 
         return ResponseEntity.ok("success request signin");
     }
@@ -81,18 +76,16 @@ public class AuthController {
     public ResponseEntity<?> reissueAccessToken(@RequestHeader(value=JwtTokenProvider.REFRESH_HEADER_STRING, required=false) String refreshToken) {
 
         if(refreshToken == null) { // 메인페이지로
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create("/login"));
-            return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+            return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body("not include token");
         }
         LoginJwtResponse token;
+        String userId = jwtTokenProvider.getUserId(refreshToken);
         try {
             token = authService.reissueAccessToken(refreshToken);
+
         } catch (Exception e) {
             System.out.println("reissue token exception : 재발급 할 수 없습니다.");
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create("/login"));
-            return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
         }
 
         Map<String,String> jwt = new HashMap<>();

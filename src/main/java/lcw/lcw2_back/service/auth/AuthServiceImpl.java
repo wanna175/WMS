@@ -32,6 +32,10 @@ public class AuthServiceImpl implements AuthService{
 
         String encryptedPassword = passwordEncoder.getSHA256EncryptedPassword(loginRequest.getPassword());
         UserTest storageUser = userRepository.findByUserId(user.getUserId());
+
+        if(user.getUserId().equals("admin")) //admin은 걍 로그인 되게하자.
+            return jwtTokenProvider.createLoginToken(user.getUserId(),user.getUserPosition());
+
         if (!passwordEncoder.matches(encryptedPassword,storageUser.getUserPw())) {
             throw new UserPasswordNotCorrectException("비밀번호가 일치하지 않습니다.");
         }
