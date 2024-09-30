@@ -12,6 +12,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +28,20 @@ public class NotificationServiceImpl implements NotificationService{
         String emitterId = userId;
         SseEmitter emitter = emitterRepository.save(emitterId,new SseEmitter(timeout));
 
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
+        // 주기적(30초)으로 더미 이벤트 전송
+        executor.scheduleAtFixedRate(() -> {
+            try {
+                emitter.send(SseEmitter.event().data("dummy")); // 더미 데이터 전송
+            } catch (Exception e) {
+                emitter.completeWithError(e);
+            }
+        }, 0, 30, TimeUnit.SECONDS); // 처음 0초 후 시작하고, 30초마다 실행
+
+        // SSE 연결이 끝나면 스케줄러 종료
         emitter.onCompletion(()->{
+            executor.shutdown();
             updateNotificationTableByUserId(userId);
             emitterRepository.deleteById(emitterId);
             //로그아웃이나 타임아웃시에 디비접근해서 한꺼번에 읽음 처리
@@ -39,7 +55,7 @@ public class NotificationServiceImpl implements NotificationService{
 
         //503 error 방지=> 더미 이벤트 전송해주기
         String eventId = System.currentTimeMillis()+"@"+userId;
-        sendNotification(emitter,eventId,emitterId,"[create SSE Connection] userId : "+userId);
+        sendNotification(emitter,eventId,emitterId,"dummy");
         return emitter;
     }
 

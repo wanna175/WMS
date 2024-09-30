@@ -1,6 +1,5 @@
 import DashboardUI from "./dashboard.presenter";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 /*
   필요한 데이터 셋
@@ -32,5 +31,5 @@ import axios from "axios";
 */
 
 export default function Dashboard(props) {
-  return <DashboardUI/>;
+  return <DashboardUI />;
 }
