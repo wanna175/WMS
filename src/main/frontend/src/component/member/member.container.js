@@ -9,10 +9,32 @@ import { useAPI } from "../../../src/axios/useAPI";
 
 export default function Member() {
   const router = useRouter();
+  const { get, post } = useAPI();
   const initialData = []; //초기 데이터
   const [data, setData] = useState([]); // 데이터를 저장할 상태
   const [userStatus, setUserStatus] = useState(1); // 현재 선택된 userStatus
   
+
+  //******디비 연결 */
+  // API 호출 함수
+  const fetchData = async () => {
+    try {
+      const response = await post ('/user/list', {}); // 백엔드 API 호출
+
+      console.log(response.dto);
+
+      setData(response.dto.dtoList); // 응답 데이터를 테이블에 매핑
+
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
 
   const fetchMemberList = async (userStatus) => {
     try {
@@ -37,24 +59,6 @@ export default function Member() {
     errorModal("fail", "빈칸없이 입력해주세요");
   };
   
-  
-    useEffect(() => {
-      // 데이터 가져오기
-      const fetchData = async () => {
-        try {
-          // POST 요청으로 userStatus 값을 본문에 포함시킴
-
-          const response = (await axios.post('/api/member/list', { Byte: userStatus }));
-          setData(response.data);
-        } catch (error) {
-          console.error('데이터를 가져오는 중 오류 발생:', error);
-        }
-      };
-  
-      fetchData();
-    }, [userStatus]); // userStatus가 변경될 때마다 데이터를 다시 가져옴
-  
-  
      // 목록 토글 핸들러
     const showEmployeeList = () => {
       setUserStatus(1); // 사원 목록 버튼 클릭 시 userStatus를 1로 설정
@@ -72,5 +76,6 @@ export default function Member() {
     data = {data}
     showEmployeeList = {showEmployeeList}
     showNonEmployeeList={showNonEmployeeList}
+    fetchData={fetchData}
     />;
 }

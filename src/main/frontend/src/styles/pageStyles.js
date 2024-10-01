@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { SearchOutlined } from '@ant-design/icons';
 import theme from '../styles/theme';
-import { Table, Button, Select, Calendar, Modal, Tabs } from 'antd';
+import { Table, Button, Select, Calendar, Modal, Alert } from 'antd';
 
 // Table 컴포넌트를 styled-components로 스타일링
 //테이블 스타일링
+
 export const Htable = styled(Table)`
 .ant-table {
     font-size: 30px;  /* 셀 폰트 크기 */
@@ -29,8 +30,6 @@ export const Htable = styled(Table)`
 .ant-table-pagination {
     justify-content: center;
     aligen-items: flex-start;
-    border-color: ${theme.colors.glbDarkGreen};
-    
 }
 `;
 
