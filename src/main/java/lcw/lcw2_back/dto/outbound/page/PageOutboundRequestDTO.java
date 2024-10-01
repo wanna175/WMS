@@ -23,7 +23,7 @@ public class PageOutboundRequestDTO {
     private int page = 1;
 
     @Builder.Default
-    private int size = 15;
+    private int size = 1000;
     private String status; //검색조건 : 진행상태
     private String item; //검색조건 : 품목명
     @DateTimeFormat(pattern = "yyyy-MM-dd")

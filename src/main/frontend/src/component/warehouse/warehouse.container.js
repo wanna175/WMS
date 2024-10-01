@@ -41,7 +41,7 @@ export default function Warehouse() {
       }, {});
 
       const responseData = await get("/storage/storage_list", params);
-      setData(responseData); // 상태에 데이터 저장
+      setData(responseData.data.data); // 상태에 데이터 저장
       console.log(responseData);
     } catch (error) {
       console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
@@ -106,11 +106,6 @@ export default function Warehouse() {
   
   
   
-
-
-
-
-
 
   // 컴포넌트가 렌더링할 때 특정 동작을 수행하는 useEffect로 컴포넌트가 처음 렌더링될 때
   // 데이터를 가져오는 fetchData를 호출

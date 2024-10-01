@@ -3,6 +3,7 @@ package lcw.lcw2_back.dto.user;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Size;
 import lcw.lcw2_back.domain.userTest.Role;
+import lcw.lcw2_back.dto.auth.SignInRequest;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -39,5 +40,16 @@ public class UserDTO {
     @Nullable
     private String userProfile; //프로필 사진 uuid
 
+    public UserDTO(SignInRequest sr){
+        this.userId = sr.getUserId();
+        this.storageId = sr.getStorageId();
+        this.userPw = sr.getUserPw();
+        this.userName = sr.getUserName();
+        this.userBirth = sr.getUserBirth();
+        this.userEmail = sr.getUserEmail();
+        this.userContact = sr.getUserContact();
+        this.userStatus = "0";
+        this.userPosition = Role.MANAGER;
+    }
 
 }

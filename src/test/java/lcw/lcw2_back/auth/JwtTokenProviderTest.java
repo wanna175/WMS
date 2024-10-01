@@ -4,17 +4,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lcw.lcw2_back.domain.userTest.Role;
 import lcw.lcw2_back.dto.auth.LoginJwtResponse;
-import lcw.lcw2_back.dto.auth.LoginRequest;
 import lcw.lcw2_back.dto.auth.SignInRequest;
-import lcw.lcw2_back.exception.auth.UserIdNotFoundException;
-import lcw.lcw2_back.exception.auth.UserPasswordNotCorrectException;
 import lcw.lcw2_back.global.Utils.PasswordEncoder;
 import lcw.lcw2_back.repository.auth.MemoryAccessTokenRepository;
 import lcw.lcw2_back.repository.auth.MemoryRefreshTokenRepository;
-import lcw.lcw2_back.repository.userTest.MemoryUserRepository;
 import lcw.lcw2_back.service.auth.AuthService;
 import lcw.lcw2_back.service.auth.AuthServiceImpl;
-import lcw.lcw2_back.service.notification.NotificationServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +18,6 @@ import org.junit.jupiter.api.Test;
 import javax.crypto.SecretKey;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
 
 class JwtTokenProviderTest {
 

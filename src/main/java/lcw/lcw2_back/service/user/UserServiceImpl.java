@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean insertNewUser(UserDTO userDTO) {
+        System.out.println("잘들어옴");
         return userMapper.insertNewUser(modelMapper.map(userDTO, User.class)) > 0;
     }
 

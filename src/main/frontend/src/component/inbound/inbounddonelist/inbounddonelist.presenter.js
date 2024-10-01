@@ -1,10 +1,14 @@
 import * as S from "./inbounddonelist.styles";
 import React from "react";
+import { Divider, Tabs, Table, Button } from 'antd';
+import SearchDoneContent from "../tabcontents/SearchDoneContent";
+import PrintDoneData from "../tabcontents/PrintDoneData";
 
-// InboundUI 컴포넌트는 검색 조건 입력 UI와 데이터 리스트를 화면에 렌더링합니다.
 export default function InboundUI({
   data,
   status,
+  requestDate,
+  setRequestDate,
   setStatus,
   startDate,
   setStartDate,
@@ -14,61 +18,59 @@ export default function InboundUI({
   setArriveName,
   item,
   setItem,
-  inboundIds,
+  outboundMart,
+  setOutboundMart,
+  outboundIds,
+  setOutboundIds,
   fetchData,
-  handleCheckboxChange
+  handleCheckboxChange,
 }) {
+  const onChange = (key) => {
+    console.log(key);
+  };
+  const items = [
+    {
+      key: '1',
+      label: '전체 조회',
+      children: <PrintDoneData type="all" data={data}/>,
+    },
+    {
+      key: '2',
+      label: '출고완료',
+      children: <PrintDoneData type="start" data={data}/>,
+    },
+    {
+      key: '3',
+      label: '입고완료',
+      children: <PrintDoneData type="end" data={data}/>,
+    },
+    {
+      key: '4',
+      label: '검색',
+      children:  (
+        <>
+          <SearchDoneContent
+            status={status}
+            setStatus={setStatus}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={setEndDate}
+            setEndDate={setEndDate}
+            arriveName={arriveName}
+            setArriveName={setArriveName}
+            outboundMart={outboundMart}
+            setOutboundMart={setOutboundMart}
+            item={item}
+            setItem={setItem}
+            fetchData={fetchData}
+          />
+          <PrintDoneData type="search" data={data} /> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}
+        </>
+      ),
+    },
+  ];
+  
   return (
-    <div>
-      <h2>입고 현황</h2>
-      {/* 검색 조건 입력 UI */}
-      <div>
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="수신지"
-          value={arriveName}
-          onChange={(e) => setArriveName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="품목"
-          value={item}
-          onChange={(e) => setItem(e.target.value)}
-        />
-        <button onClick={fetchData}>검색</button>
-      </div>
-
-      {/* 데이터 리스트 렌더링 */}
-      {/* data와 data.data가 존재하고, data.data가 배열인지 확인 */}
-      {/* data : data가 null이나 undefined인지 확인 */}
-      {/* Array.isArray(data.data) : .map() 메서드를 사용하기 위해서 data.data가 배열인지 확인 */}
-      {/* data.data.length : 길이가 0이면 출력할 데이터가 없는 것이므로 false를 반환 */}
-      {data && Array.isArray(data.data) && data.data.length > 0 ? (
-        <ul>
-          {data.data.map((item, index) => (
-            <li key={index}>
-              <p>출고 ID: {item.inboundId}</p>
-              <p>진행상태: {item.status}</p>
-              <p>출고 창고명: {item.departStorageName}</p>
-              <p>도착지 이름: {item.arriveName}</p>
-              <p>상품 목록: {item.products}</p>
-              <p>요청 날짜: {item.requestDate}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>데이터가 없습니다.</p> // 데이터를 찾을 수 없을 때 출력
-      )}
-    </div>
+      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
   );
 }

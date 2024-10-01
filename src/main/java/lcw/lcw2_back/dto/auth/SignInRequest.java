@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class SignInRequest {
     private String userId;
-    private String storageId;
+    private Long storageId;
     private String userPw;
     private String userName;
     private LocalDate userBirth;

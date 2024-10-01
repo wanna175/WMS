@@ -44,8 +44,8 @@ export default function Inbound() {
       }, {});
 
       const responseData = await get("/inbound/request_list", params);
-      setData(responseData); // 상태에 데이터 저장
-      console.log(responseData);
+      setData(responseData.data.data); // 상태에 데이터 저장
+      console.log(responseData.data.data);
     } catch (error) {
       console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
     }

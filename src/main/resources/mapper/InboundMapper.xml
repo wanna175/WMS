@@ -47,12 +47,12 @@
         i.status,
         i.request_date,
         s_to.storage_name AS arriveName,
-        u_to.user_id <!-- 요청 아이디 -->
+        u_from.user_id <!-- 요청 아이디 -->
         FROM Inbound i
-        JOIN User u_from ON i.user_id = u_from.user_id
-        JOIN Storage s_from ON u_from.storage_id = s_from.storage_id
-        LEFT JOIN Storage s_to ON i.depart_storage_id = s_to.storage_id  <!-- 발송지 -->
-        LEFT JOIN User u_to ON s_to.storage_id = u_to.storage_id <!-- 요청서 조회할 아이디를 얻기 위한 JOIN -->
+        JOIN User u_to ON i.user_id = u_to.user_id
+        JOIN Storage s_to ON u_to.storage_id = s_to.storage_id
+        JOIN Storage s_from ON i.depart_storage_id = s_from.storage_id  <!-- 발송지 -->
+        LEFT JOIN User u_from ON s_from.storage_id = u_from.storage_id <!-- 요청서 조회할 아이디를 얻기 위한 JOIN -->
         JOIN Inbound_Item ii ON ii.inbound_id = i.inbound_id
         JOIN Product p ON ii.product_id = p.product_id
         WHERE 1=1
@@ -107,16 +107,16 @@
     <!-- 입고현황 조회 -->
     <select id="selectInboundDoneList" resultType="lcw.lcw2_back.domain.inbound.Inbound" parameterType="map">
         SELECT i.inbound_id,
-        s_from.storage_name AS arriveName,
+        s_to.storage_name AS arriveName,
         <!--  GROUP_CONCAT으로 product_name과 quantity를 문자열로 결합 -->
         GROUP_CONCAT(CONCAT(p.product_name, ': ', ii.quantity) SEPARATOR ', ') AS products,
         i.status,
         i.inbound_complete_date,
-        s_to.storage_name AS departStorageName
+        s_from.storage_name AS departStorageName
         FROM Inbound i
         JOIN User u ON i.user_id = u.user_id
-        JOIN Storage s_from ON u.storage_id = s_from.storage_id
-        LEFT JOIN Storage s_to ON i.depart_storage_id = s_to.storage_id  <!-- 발송지 -->
+        JOIN Storage s_to ON u.storage_id = s_to.storage_id
+        JOIN Storage s_from ON i.depart_storage_id = s_from.storage_id  <!-- 발송지 -->
         JOIN inbound_item ii ON ii.inbound_id = i.inbound_id
         JOIN Product p ON ii.product_id = p.product_id
         WHERE 1=1

@@ -45,8 +45,8 @@ export default function Outbound() {
       }, {});
 
       const responseData = await get("/outbound/request_list", params);
-      setData(responseData); // 상태에 데이터 저장
-      console.log(responseData);
+      setData(responseData.data.data); // 상태에 데이터 저장
+      console.log("data넘기기 : ", responseData.data.data);
     } catch (error) {
       console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
     }
@@ -111,6 +111,8 @@ export default function Outbound() {
           setArriveName={setArriveName}
           item={item}
           setItem={setItem}
+          outboundMart={outboundMart}
+          setOutboundMart={setOutboundMart}
           outboundIds={outboundIds}
           setOutboundIds={setOutboundIds}
           fetchData={fetchData} // fetchData 함수 전달
