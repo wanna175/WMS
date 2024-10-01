@@ -10,17 +10,17 @@
         JOIN storage st ON s.storage_id = st.storage_id
         JOIN product p ON s.product_id = p.product_id
         <where>
-            <if test="product_name != null and product_name != ''">
-                p.product_name like concat('%', #{product_name}, '%')
+            <if test="productName != null and productName != ''">
+                p.product_name like concat('%', #{productName}, '%')
             </if>
-            <if test="storage_name != null and storage_name != ''">
-                <if test="product_name != null and product_name != ''">
+            <if test="storageName != null and storageName != ''">
+                <if test="productName != null and productName != ''">
                     and
                 </if>
-                st.storage_name like concat('%', #{storage_name}, '%')
+                st.storage_name like concat('%', #{storageName}, '%')
             </if>
         </where>
-        order by s.storage_id desc limit #{skip}, #{size}
+        order by st.storage_name desc limit #{skip}, #{size}
     </select>
 
     <select id="getCount" resultType="Integer">
@@ -34,6 +34,19 @@
     <select id="findStockById" resultType="lcw.lcw2_back.domain.stock.StockVO">
         select * from stock where storage_id=#{storageId} and product_id = #{productId}
     </select>
+
+    <select id="getStorageName" resultType="lcw.lcw2_back.domain.storage.Storage">
+        select storage_name from storage
+    </select>
+
+    <select id="getProductName" resultMap="ListVOMap">
+        select product_name from product
+    </select>
+
+<!--    ListVo 재활용해서 productName 받아오기-->
+    <resultMap id="ListVOMap" type="lcw.lcw2_back.domain.ListVO">
+        <result property="content" column="product_name"/>
+    </resultMap>
 
 
 

@@ -4,3 +4,4 @@ export const Wrapper = styled.div`
   height: 500px;
   width: 700px;
 `;
+

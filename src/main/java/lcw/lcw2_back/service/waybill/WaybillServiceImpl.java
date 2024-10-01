@@ -1,10 +1,10 @@
 package lcw.lcw2_back.service.waybill;
 
-
 import lcw.lcw2_back.domain.inbound.InboundItem;
 import lcw.lcw2_back.domain.outbound.OutboundItem;
+import lcw.lcw2_back.domain.storage.Storage;
 import lcw.lcw2_back.domain.waybill.WaybillVO;
-
+import lcw.lcw2_back.dto.StorageDTO;
 import lcw.lcw2_back.dto.inbound.InboundItemDTO;
 import lcw.lcw2_back.dto.outbound.OutboundItemDTO;
 import lcw.lcw2_back.dto.waybill.WaybillDTO;
@@ -19,11 +19,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class WaybillServiceImpl implements WaybillService{
+public class WaybillServiceImpl implements WaybillService {
 
     private final ModelMapper modelMapper;
     private final WaybillMapper waybillMapper;
@@ -31,7 +30,7 @@ public class WaybillServiceImpl implements WaybillService{
     @Override
     public PageWaybillResponseDTO<WaybillDTO> listAll(PageWaybillRequestDTO pageWaybillRequestDTO) {
 
-        List<WaybillVO> voList = waybillMapper.listALl(pageWaybillRequestDTO);
+        List<WaybillVO> voList = waybillMapper.listAll(pageWaybillRequestDTO);
 
         // WaybillVO -> WaybillDTO로 변환 및 OutboundItem 매칭
         List<WaybillDTO> dtoList = voList.stream().map(vo -> {
@@ -47,9 +46,9 @@ public class WaybillServiceImpl implements WaybillService{
                         .map(item -> modelMapper.map(item, OutboundItemDTO.class))
                         .collect(Collectors.toList());
 
-                // 기존 DTO의 필드를 그대로 복사하고, OutboundItems만 추가하여 새로운 DTO를 빌드
-                dto = dto.builder()
-                        .outboundItemList(outboundItemDTOList)  // 리스트 추가
+                // toBuilder()를 사용하여 기존 필드를 유지하면서 OutboundItems만 추가
+                dto = dto.toBuilder()
+                        .outboundItemList(outboundItemDTOList)
                         .build();
             }
 
@@ -62,30 +61,35 @@ public class WaybillServiceImpl implements WaybillService{
                         .map(item -> modelMapper.map(item, InboundItemDTO.class))
                         .collect(Collectors.toList());
 
-                // 기존 DTO의 필드를 그대로 복사하고, InboundItems만 추가하여 새로운 DTO를 빌드
-                dto = dto.builder()
-                        .inboundItemList(inboundItemDTOList)  // 리스트 추가
+                // toBuilder()를 사용하여 기존 필드를 유지하면서 InboundItems만 추가
+                dto = dto.toBuilder()
+                        .inboundItemList(inboundItemDTOList)
                         .build();
             }
 
             return dto;
         }).collect(Collectors.toList());
 
-
-
         int total = waybillMapper.getCount(pageWaybillRequestDTO);
+
+        List<Storage> storageList = waybillMapper.getStorageName();
+        List<StorageDTO> storageDTOList = storageList.stream()
+                .map(storage -> modelMapper.map(storage, StorageDTO.class))
+                .collect(Collectors.toList());
 
         PageWaybillResponseDTO<WaybillDTO> pageWaybillResponseDTO = PageWaybillResponseDTO.<WaybillDTO>withAll()
                 .dtoList(dtoList)
                 .total(total)
                 .pageWaybillRequestDTO(pageWaybillRequestDTO)
+                .storageDTOList(storageDTOList)
                 .build();
+
+
         return pageWaybillResponseDTO;
     }
 
     @Override
     public void modifyWaybill(PageWaybillRequestDTO pageWaybillRequestDTO) {
         waybillMapper.modifyWaybill(pageWaybillRequestDTO);
-
     }
 }

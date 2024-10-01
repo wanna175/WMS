@@ -8,6 +8,7 @@ import lcw.lcw2_back.dto.stock.page.PageStockResponseDTO;
 import lcw.lcw2_back.service.stock.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +25,6 @@ public class StockController {
 
     private final StockService stockService;
 
-    @GetMapping("/test")
-    public String testPage(){
-        log.info("test");
-        return "test";
-    }
     @PostMapping("/stock/list")
     public PageStockResponseDTO<StockDTO> getList(@RequestBody PageStockRequestDTO pageStockRequestDTO, BindingResult bindingResult) {
         log.info("stock list~~~~~~~~~");
@@ -42,30 +38,29 @@ public class StockController {
         return savedStocks;
     }
 
-    @PutMapping("/stock/modify/{storageId}/{productId}/{quantity}")
-    public ResponseEntity<Map<String, String>> modifyQuantity(@PathVariable Long storageId,
-                                                                    @PathVariable Long productId,
-                                                                    @PathVariable Long quantity,
-                                                                    @RequestBody PageStockRequestDTO pageStockRequestDTO,
-                                                                    BindingResult bindingResult,
-                                                                    RedirectAttributes redirectAttributes) {
+    @PostMapping("/stock/modify")
+    public ResponseEntity<Map<String, Object>> modifyQuantity(
+            @RequestBody PageStockRequestDTO pageStockRequestDTO,
+            BindingResult bindingResult) {
+
         log.info("stock modify~~~~~~~~~");
 
-        int result = stockService.modifyQuantity(storageId,productId, quantity);
+        // 재고 수정 로직
+        int result = stockService.modifyQuantity(pageStockRequestDTO);
+        log.info("재고 수정 메소드 실행 결과 : " + result);
 
-        log.info("재고 수정 메소드 실행 결과 : "+result);
-
-        if(bindingResult.hasErrors()){
-            pageStockRequestDTO = PageStockRequestDTO.builder().build();
+        // 결과에 따라 적절한 응답 반환
+        Map<String, Object> response = new HashMap<>();
+        if (result > 0) {
+            response.put("status", "success");
+            response.put("message", "재고가 성공적으로 수정되었습니다.");
+            return ResponseEntity.ok(response); // 200 OK
+        } else {
+            response.put("status", "error");
+            response.put("message", "재고 수정 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // 500 Internal Server Error
         }
-//        redirectAttributes.addAttribute("page", pageStockRequestDTO.getPage());
-//        redirectAttributes.addAttribute("size", pageStockRequestDTO.getSize());
-        //return "redirect:/api/stock/list";
 
-        Map<String, String> ret = new HashMap<>();
-        ret.put("responseURL","http://localhost:3000/wms/inventory");
-        ret.put("page", String.valueOf(pageStockRequestDTO.getPage()));//alt + shift + enter를 치면 알아서 감싸짐
-        ret.put("size", String.valueOf(pageStockRequestDTO.getSize()));//alt + shift + enter를 치면 알아서 감싸짐
-        return ResponseEntity.ok(ret);
     }
+
 }

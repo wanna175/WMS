@@ -22,18 +22,22 @@ public class WaybillController {
     private final WaybillService waybillService;
 
     @PostMapping("/waybill/list")
-    public ResponseEntity<PageWaybillResponseDTO<WaybillDTO>> getList(@RequestBody PageWaybillRequestDTO pageWaybillRequestDTO, BindingResult bindingResult) {
+   //public ResponseEntity<PageWaybillResponseDTO<WaybillDTO>> getList(@RequestBody PageWaybillRequestDTO pageWaybillRequestDTO, BindingResult bindingResult) {
+    public PageWaybillResponseDTO<WaybillDTO> getList(@RequestBody PageWaybillRequestDTO pageWaybillRequestDTO, BindingResult bindingResult) {
         log.info("waybill list~~~~~~~~~");
 
-        PageWaybillResponseDTO<WaybillDTO> savedStocks = waybillService.listAll(pageWaybillRequestDTO);
+        PageWaybillResponseDTO<WaybillDTO> data = waybillService.listAll(pageWaybillRequestDTO);
+
+        log.info("데이터 출력해보기 : "+data);
 
         if(bindingResult.hasErrors()){
             pageWaybillRequestDTO = PageWaybillRequestDTO.builder().build();
         }
-        return ResponseEntity.ok().body(savedStocks);
+        //return ResponseEntity.ok().body(response);
+        return data;
     }
 
-    @PutMapping("/waybill/modify/{storageId}/{productId}")
+    @PostMapping("/waybill/modify")
     public String modifyQuantity(@RequestBody PageWaybillRequestDTO pageWaybillRequestDTO,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {

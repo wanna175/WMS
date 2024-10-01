@@ -10,78 +10,29 @@
         w.outbound_id,
         w.inbound_id,
         w.created_date,
-        w.status,
-
-        -- arrive_address, arrive_address_detail, arrive_zipcode 설정
-        CASE
-        WHEN w.outbound_id IS NOT NULL THEN
-        (CASE
-        WHEN o.outbound_mart = 1 THEN w.arrive_address
-        ELSE (SELECT s.address FROM storage s WHERE s.storage_id = o.arrive_storage_id)
-        END)
-        ELSE
-        (SELECT s.address FROM storage s WHERE s.storage_id = i.depart_storage_id)
-        END AS arrive_address,
-
-        CASE
-        WHEN w.outbound_id IS NOT NULL THEN
-        (CASE
-        WHEN o.outbound_mart = 1 THEN w.arrive_address_detail
-        ELSE (SELECT s.address_detail FROM storage s WHERE s.storage_id = o.arrive_storage_id)
-        END)
-        ELSE
-        (SELECT s.address_detail FROM storage s WHERE s.storage_id = i.depart_storage_id)
-        END AS arrive_address_detail,
-
-        CASE
-        WHEN w.outbound_id IS NOT NULL THEN
-        (CASE
-        WHEN o.outbound_mart = 1 THEN w.arrive_zipcode
-        ELSE (SELECT s.zipcode FROM storage s WHERE s.storage_id = o.arrive_storage_id)
-        END)
-        ELSE
-        (SELECT s.zipcode FROM storage s WHERE s.storage_id = i.depart_storage_id)
-        END AS arrive_zipcode,
-
-        -- depart_address, depart_address_detail, depart_zipcode 설정
-        CASE
-        WHEN w.inbound_id IS NOT NULL THEN
-        (SELECT s.address FROM storage s WHERE s.storage_id = i.depart_storage_id)
-        ELSE
-        (SELECT s.address FROM storage s join user u on u.user_id = o.user_id and s.storage_id = u.user_id)
-        END AS depart_address,
-
-        CASE
-        WHEN w.inbound_id IS NOT NULL THEN
-        (SELECT s.address_detail FROM storage s WHERE s.storage_id = i.depart_storage_id)
-        ELSE
-        (SELECT s.address_detail FROM storage s join user u on u.user_id = o.user_id and s.storage_id = u.user_id)
-        END AS depart_address_detail,
-
-        CASE
-        WHEN w.inbound_id IS NOT NULL THEN
-        (SELECT s.zipcode FROM storage s WHERE s.storage_id = i.depart_storage_id)
-        ELSE
-        (SELECT s.zipcode FROM storage s join user u on u.user_id = o.user_id and s.storage_id = u.user_id)
-        END AS depart_zipcode
+        w.depart_address,
+        w.arrive_address,
+        w.depart_address_detail,
+        w.depart_zipcode,
+        w.arrive_zipcode,
+        w.depart_storage_name,
+        w.arrive_storage_name
 
         FROM waybill w
         LEFT JOIN outbound o ON w.outbound_id = o.outbound_id
         LEFT JOIN inbound i ON w.inbound_id = i.inbound_id
 
         <where>
-            <if test="depart_storage_name != null and depart_storage_name != ''">
-                depart_storage_name like concat('%', #{departStorageName}, '%')
+            <if test="departStorageName != null and departStorageName != ''">
+                w.depart_storage_name like concat('%', #{departStorageName}, '%')
             </if>
-            <if test="arrive_storage_name != null and arrive_storage_name != ''">
-                and arrive_storage_name like concat('%', #{arriveStorageName}, '%')
+            <if test="arriveStorageName != null and arriveStorageName != ''">
+                and w.arrive_storage_name like concat('%', #{arriveStorageName}, '%')
             </if>
-            <if test="waybill_id != null and waybill_id != ''">
-                and waybill_id = #{waybillId}
+            <if test="waybillId != null and waybillId != ''">
+                and w.waybill_id = #{waybillId}
             </if>
-            <if test="status != null and status != ''">
-                and status = #{status}
-            </if>
+
             <if test="startDate != null and endDate != null">
                 AND DATE(o.request_date) BETWEEN #{startDate} AND #{endDate}
             </if>
@@ -125,6 +76,10 @@
 
     <select id="getItemsByInboundId" resultType="lcw.lcw2_back.domain.inbound.InboundItem">
         select * from inbound_item where inbound_id=#{inboundId}
+    </select>
+
+    <select id="getStorageName" resultType="lcw.lcw2_back.domain.storage.Storage">
+        select storage_name from storage
     </select>
 
 

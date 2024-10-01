@@ -34,7 +34,7 @@ export default function Outbound() {
         item,
         arriveName,
         outboundStorageName,
-        outboundMart,
+        outboundMart
       };
 
       // 빈 문자열, null, undefined를 필터링

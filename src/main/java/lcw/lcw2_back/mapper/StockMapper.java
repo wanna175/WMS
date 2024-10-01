@@ -1,7 +1,9 @@
 package lcw.lcw2_back.mapper;
 
+import lcw.lcw2_back.domain.ListVO;
 import lcw.lcw2_back.domain.stock.StockVO;
 
+import lcw.lcw2_back.domain.storage.Storage;
 import lcw.lcw2_back.dto.stock.page.PageStockRequestDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,5 +20,8 @@ public interface StockMapper {
     public Integer getCount(PageStockRequestDTO pageStockRequestDTO);
 
     public StockVO findStockById(Long storageId, Long productId);
+
+    public List<Storage> getStorageName();
+    public List<ListVO> getProductName();
 
 }
