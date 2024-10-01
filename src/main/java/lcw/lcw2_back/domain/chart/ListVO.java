@@ -1,4 +1,4 @@
-package lcw.lcw2_back.domain;
+package lcw.lcw2_back.domain.chart;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

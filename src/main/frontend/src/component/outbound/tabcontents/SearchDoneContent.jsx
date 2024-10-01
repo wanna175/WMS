@@ -30,7 +30,7 @@ const itemOption = [
 ];
 
 
-
+<p>*오후 4시 이후로는 승인된 요청이 출고완료가 되어 출고취소가 안됩니다. 주의 부탁드립니다.*</p>
 export default function SearchDoneContent({
   status,
   setStatus,

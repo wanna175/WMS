@@ -1,8 +1,5 @@
 package lcw.lcw2_back.dto.stock.page;
 
-import lcw.lcw2_back.domain.ListVO;
-import lcw.lcw2_back.domain.storage.Storage;
-import lcw.lcw2_back.dto.StorageDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -29,19 +26,12 @@ public class PageStockResponseDTO<E> {
 
     private List<E> dtoList;
 
-    //검색 조건 select에 담길 값
-    private List<StorageDTO> storageDTOList;
-    private List<ListVO> productList;
-
     @Builder(builderMethodName = "withAll")
-    public PageStockResponseDTO(PageStockRequestDTO pageStockRequestDTO, List<E> dtoList, int total, List<StorageDTO> storageDTOList, List<ListVO> productList ) {
+    public PageStockResponseDTO(PageStockRequestDTO pageStockRequestDTO, List<E> dtoList, int total) {
 
         if (total <= 0) {
             return;
         }
-
-        this.storageDTOList = storageDTOList;
-        this.productList = productList;
 
         this.page = pageStockRequestDTO.getPage();
         this.size = pageStockRequestDTO.getSize();

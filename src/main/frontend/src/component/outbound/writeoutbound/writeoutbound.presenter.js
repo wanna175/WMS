@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import { Select, Input, Button } from 'antd';
-import { CloseOutlined } from "@ant-design/icons";
-import theme from '../../../styles/theme';
+import React from 'react';
+import { Select, Input } from 'antd';
 import * as S from "./writeoutbound.styles";
 import styled from '@emotion/styled';
 
@@ -35,7 +33,7 @@ const products = [
   },
 ];
 
-const arriveNames = [
+const arriveName = [
   {
     value: 'Storage A',
     label: 'Storage A'
@@ -56,19 +54,7 @@ const arriveNames = [
     value: 'Storage E',
     label: 'Storage E'
   },
-];
-
-const isOutboundMart = [
-  {
-    value: 0,
-    label: '미출고'
-  },
-  {
-    value: 1,
-    label: '출고'
-  },
-
-];
+]
 
 export default function OutboundUI({
   userId,
@@ -87,123 +73,68 @@ export default function OutboundUI({
   setQuantity,
   fetchData,
 }) {
-  const [fields, setFields] = useState([{ product: '', quantity: '' }]);
-
-  // 필드 추가
-  const handleAddField = () => {
-    setFields([...fields, { product: '', quantity: '' }]);
-  };
-
-  // 필드 삭제
-  const handleRemoveField = (index) => {
-    const updatedFields = fields.filter((_, i) => i !== index);
-    setFields(updatedFields);
-  };
-
-  // 입력 값 업데이트
-  const handleFieldChange = (index, field, value) => {
-    const updatedFields = [...fields];
-    updatedFields[index][field] = value;
-    setFields(updatedFields);
-  };
-
-  // 폼 초기화
-  const handleReset = () => {
-    setFields([{ product: '', quantity: '' }]); // 품목과 수량 초기화
-    setArriveName(''); // 수신지 초기화
-    setOutboundMart(0); // 출고 여부 초기화
-  };
 
   return (
-    <form style={{ border: "solid 1px grey", padding: "30px", display: "flex", flexDirection: "column", width: "50vw", maxWidth: "700px", margin: "auto", marginBottom:"60px", alignContent: "center" }}>
+    <div style={{ border: "solid 1px grey", padding: "30px", display: "flex", flexDirection: "column", width: "50vw", maxWidth: "700px", margin: "auto", alignContent: "center" }}>
       <h1 style={{ marginBottom: "30px", fontSize: "24px" }}>출고 요청서</h1>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <text style={{ width: "45%", textAlign: "left", paddingLeft: "10px", marginBottom: "5px" }}>품목</text>
-        <text style={{ width: "45%", textAlign: "left", paddingLeft: "10px", marginBottom: "5px" }}>수량</text>
-        <div style={{ width: "4%" }} />
+        <text style={{ width: "40%", textAlign: "left", paddingLeft: "10px", marginBottom: "5px" }}>품목</text>
+        <text style={{ width: "40%", textAlign: "left", paddingLeft: "10px", marginBottom: "5px" }}>수량</text>
       </div>
-
-
-      {fields.map((field, index) => (
-        <div key={index} style={{ display: "flex", justifyContent: "space-around", marginBottom: "10px" }}>
-          <Select
-            showSearch
-            placeholder="품목"
-            onChange={(value) => handleFieldChange(index, 'product', value)}
-            onSearch={onSearch}
-            options={products}
-            value={field.product}
-            style={{ width: "45%" }}
-          />
-          <Input
-            placeholder='수량'
-            value={field.quantity}
-            onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
-            style={{ width: "45%" }}
-          />
-          <button
-            type="button"
-            onClick={() => handleRemoveField(index)}
-            style={{ padding: "auto", border: "none", backgroundColor: theme.colors.glbWhite, }}
-          >
-            <CloseOutlined />
-          </button>
-        </div>
-      ))}
-
-      {/* 추가 버튼 */}
-      <S.Button type='button' onClick={handleAddField} style={{ width: "98%", border: "none", backgroundColor: theme.colors.glbWhite }}>
-        + 품목 추가
-      </S.Button>
-
-
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <Select
+          showSearch
+          placeholder="품목"
+          onChange={onChange}
+          onSearch={onSearch}
+          options={products}
+          style={{
+            width: "40%",
+          }}
+        />
+        <Input
+          placeholder='수량'
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          style={{
+            width: "40%"
+          }}
+        />
+      </div>
       <br></br>
       <br></br>
-      <label style={{ width: "98%", margin: "auto", paddingLeft: "10px" }}>발신지</label>
-      <Select
-        showSearch
-        placeholder="발신지"
-        onSearch={onSearch}
-        value={"자기 창고로 넣어야하는데............."}
-        disabled
-        style={{
-          width: "98%",
-          margin: "auto"
-        }}
-      />
-
-      <br/>
-
-      <label style={{ width: "98%", margin: "auto", paddingLeft: "10px" }}>수신지</label>
+      <label style={{ width: "90%", margin: "auto", paddingLeft: "10px" }}>수신지</label>
       <Select
         showSearch
         placeholder="수신지"
-        onChange={(e) => setArriveName(e)}
+        onChange={(e) => setArriveName(e.target.value)}
+        value={arriveName}
         onSearch={onSearch}
-        options={arriveNames}
+        options={arriveName}
         style={{
-          width: "98%",
+          width: "90%",
           margin: "auto"
         }}
       />
+      <select
+        value={arriveName}
+        onChange={(e) => setArriveName(e.target.value)}>
+        <option>선택</option>
+        <option>Storage A</option>
+        <option>Storage B</option>
+        <option>Storage C</option>
+        <option>Storage D</option>
+        <option>Storage E</option>
+      </select>
       <br></br>
-      <label style={{ width: "98%", margin: "auto", paddingLeft: "10px" }}>마트 출고 여부</label>
-      <Select
-        showSearch
-        placeholder="마트 출고 여부"
-        onChange={(e) => setOutboundMart(Number(e))}
-        onSearch={onSearch}
-        options={isOutboundMart}
-        style={{
-          width: "98%",
-          margin: "auto"
-        }}
-      />
+      <label>마트 출고 여부</label>
+      <select value={outboundMart} onChange={(e) => setOutboundMart(Number(e.target.value))}>
+        <option value={0}>미출고</option>
+        <option value={1}>출고</option>
+      </select>
       <br></br>
-      <div style={{ display: "flex", justifyContent: "end", marginTop: "60px", width: "98%"}}>
-        <S.Button onClick={fetchData} style={{marginRight: "3px"}}>요청</S.Button>
-        <S.Button onClick={handleReset}>초기화</S.Button>
-      </div>
-    </form>
+      <button onClick={fetchData}>요청</button>
+      <button type="reset">초기화</button>
+    </div>
   );
 }

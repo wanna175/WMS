@@ -23,12 +23,9 @@ public class PageStockRequestDTO {
 
 
     /**프론트 입력값들**/
-    private String productName;
-    private String storageName;
-    private Long quantity;
-
-    private Long productId;
-    private Long storageId;
+    private String product_name;
+    private String storage_name;
+    private Integer quantity;
 
     public Pageable getPageable(String...props) {
         return PageRequest.of(this.page -1, this.size, Sort.by(props).descending());

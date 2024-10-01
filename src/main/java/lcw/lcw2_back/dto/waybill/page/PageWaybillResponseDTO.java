@@ -1,10 +1,9 @@
 package lcw.lcw2_back.dto.waybill.page;
 
-
-import lcw.lcw2_back.dto.StorageDTO;
+import lcw.lcw2_back.domain.outbound.OutboundItem;
+import lcw.lcw2_back.dto.inbound.InboundDTO;
 import lcw.lcw2_back.dto.inbound.InboundItemDTO;
 import lcw.lcw2_back.dto.outbound.OutboundItemDTO;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Getter
 @ToString
-public class PageWaybillResponseDTO<WaybillDTO> {
+public class PageWaybillResponseDTO<E> {
 
     private int page;
     private int size;
@@ -32,12 +31,10 @@ public class PageWaybillResponseDTO<WaybillDTO> {
 
     private List<OutboundItemDTO> outboundItemList;//출고 품목
     private List<InboundItemDTO> inboundItemDTOList;//입고 품목
-    private List<WaybillDTO> dtoList;
-
-    private List<StorageDTO> storageDTOList;//창고이름들
+    private List<E> dtoList;
 
     @Builder(builderMethodName = "withAll")
-    public PageWaybillResponseDTO(PageWaybillRequestDTO pageWaybillRequestDTO, List<WaybillDTO> dtoList, int total, List<OutboundItemDTO> outboundItemList, List<InboundItemDTO> inboundItemDTOList, List<StorageDTO> storageDTOList) {
+    public PageWaybillResponseDTO(PageWaybillRequestDTO pageWaybillRequestDTO, List<E> dtoList, int total) {
 
         if (total <= 0) {
             return;
@@ -48,9 +45,6 @@ public class PageWaybillResponseDTO<WaybillDTO> {
 
         this.total = total;
         this.dtoList = dtoList;
-        this.inboundItemDTOList = inboundItemDTOList;
-        this.outboundItemList = outboundItemList;
-        this.storageDTOList = storageDTOList;
 
         this.end = (int) (Math.ceil(this.page / 10.0)) * 10;
 

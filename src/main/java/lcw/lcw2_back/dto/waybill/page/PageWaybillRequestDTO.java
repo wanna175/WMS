@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -27,15 +25,12 @@ public class PageWaybillRequestDTO {
 
 
     /**프론트 입력값들(검색조건)**/
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
-
-
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String arriveStorageName;
     private String departStorageName;
     private Long waybillId;
+    private boolean status;//0:false 배송중, 1:true 배송완료
     private String departAddress;
     private String arriveAddress;
     private String departAddressDetail;
