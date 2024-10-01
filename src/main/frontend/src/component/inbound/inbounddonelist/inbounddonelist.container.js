@@ -19,6 +19,7 @@ export default function Inbound() {
   const [outboundStorageName, setOutboundStorageName] = useState("");
   const [inboundIds, setInboundIds] = useState([]); // 한번에 여러 아이디를 담을거기 때문에 배열로 설정
 
+
  // 데이터를 가져오는 fetchData 함수 정의
  const fetchData = async () => {
   try {
@@ -51,19 +52,6 @@ export default function Inbound() {
   }
 };
 
-// 체크박스 클릭 시 호출될 함수
-// 매개변수를 id로 받는 함수
-const handleCheckboxChange = (id) => {
-  if (inboundIds.includes(id)) {
-    // outboudids 배열에 id가 있는지 확인하고 true, false를 반환
-    // 이미 체크된 ID는 체크 해제
-    setInboundIds(inboundIds.filter((inboundId) => inboundId !== id));
-  } else {
-    // 새로운 ID는 체크 추가
-    setInboundIds([...inboundIds, id]);
-  }
-};
-
 // 컴포넌트가 렌더링할 때 특정 동작을 수행하는 useEffect로 컴포넌트가 처음 렌더링될 때
 // 데이터를 가져오는 fetchData를 호출
 useEffect(() => {
@@ -89,7 +77,6 @@ return (
         inboundIds={inboundIds}
         setInboundIds={setInboundIds}
         fetchData={fetchData} // fetchData 함수 전달
-        handleCheckboxChange={handleCheckboxChange}
       /> // 데이터를 InboundUI에 전달
     ) : (
       <p>데이터를 불러오는 중...</p>

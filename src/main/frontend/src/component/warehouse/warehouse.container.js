@@ -17,6 +17,10 @@ export default function Warehouse() {
   const [storageArea, setStorageArea] = useState("");
   const [storageIds, setStorageIds] = useState([]);
 
+    // 선택된 행을 상태로 관리
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
+
   // 데이터를 가져오는 fetchData 함수 정의
   const fetchData = async () => {
     try {
@@ -48,21 +52,6 @@ export default function Warehouse() {
     }
   };
 
-  // 체크박스 클릭 시 호출될 함수
-  // 매개변수를 id로 받는 함수
-  const handleCheckboxChange = (id) => {
-    if (storageIds.includes(id)) {
-      // outboudids 배열에 id가 있는지 확인하고 true, false를 반환
-      // 이미 체크된 ID는 체크 해제
-      setStorageIds(storageIds.filter((storageId) => storageId !== id));
-    } else {
-      // 새로운 ID는 체크 추가
-      setStorageIds([...storageIds, id]);
-      console.log("현재 선택된 storageIds:", storageIds); // 상태 출력
-    }
-  };
-  
-
 
 
   // 승인 요청 함수
@@ -84,15 +73,14 @@ export default function Warehouse() {
   };
 
   const removeStorage = async () => {
-    // 전송 데이터 확인
-    console.log("보낼 데이터:", { storageIds });
-    
-    if (storageIds.length === 0) {
-      console.error("선택된 항목이 없습니다.");
-      return;
-    }
-  
     try {
+      // selectedRows에서 outboundId만 추출
+      const storageIds = selectedRows.map((row) => row.storageId);
+      if (storageIds.length === 0) {
+        console.error("선택된 출고 요청서가 없습니다.");
+        return;
+      }
+
       // 요청 전송
       const response = await post("/storage/remove_storage", storageIds);
       console.log("삭제된 ID:", response.storageIds);
@@ -133,8 +121,11 @@ export default function Warehouse() {
   setStorageArea={setStorageArea}
   storageIds={storageIds}
   setStorageIds={setStorageIds}
-  handleCheckboxChange={handleCheckboxChange}
   fetchData={fetchData}
+  selectedRowKeys={selectedRowKeys}
+  setSelectedRowKeys={setSelectedRowKeys}
+  selectedRows={selectedRows}
+  setSelectedRows={setSelectedRows}
   modifyStorage={modifyStorage}
   removeStorage={removeStorage}
   />

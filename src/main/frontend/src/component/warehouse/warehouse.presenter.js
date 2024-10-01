@@ -18,7 +18,10 @@ export default function WarehouseUI({
   setZipcode,
   storageArea,
   setStorageArea,
-  handleCheckboxChange,
+  selectedRowKeys,
+  setSelectedRowKeys,
+  selectedRows,
+  setSelectedRows,
   removeStorage,
   modifyStorage
 }) {
@@ -46,7 +49,10 @@ export default function WarehouseUI({
           storageArea={storageArea}
           setStorageArea={setStorageArea}
           storageIds={storageIds}
-          handleCheckboxChange={handleCheckboxChange}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
           modifyStorage={modifyStorage}
           removeStorage={removeStorage}
           /> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}

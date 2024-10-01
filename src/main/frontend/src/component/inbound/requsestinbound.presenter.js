@@ -2,17 +2,14 @@ import * as S from "./requsestinbound.styles";
 import React from "react";
 import { Divider, Tabs, Table, Button } from 'antd';
 import SearchContent from "./tabcontents/SearchNotDoneContent";
-import PrintData from "./tabcontents/PrintNoteDoneData";
+import PrintData from "./tabcontents/PrintNotDoneData";
 
 export default function InboundUI({
   data,
   status,
-  requestDate,
-  setRequestDate,
   setStatus,
   startDate,
   setStartDate,
-  endDate,
   setEndDate,
   arriveName,
   setArriveName,
@@ -20,12 +17,13 @@ export default function InboundUI({
   setItem,
   outboundMart,
   setOutboundMart,
-  outboundIds,
-  setOutboundIds,
   fetchData,
+  selectedRowKeys,
+  setSelectedRowKeys,
+  selectedRows,
+  setSelectedRows,
   approveInboundRequests,
   rejectInboundRequests,
-  handleCheckboxChange,
 }) {
   const onChange = (key) => {
     console.log(key);
@@ -34,17 +32,35 @@ export default function InboundUI({
     {
       key: '1',
       label: '전체 조회',
-      children: <PrintData type="all" data={data}/>,
+      children: <PrintData type="all" data={data}
+      selectedRowKeys={selectedRowKeys}
+      setSelectedRowKeys={setSelectedRowKeys}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
+      approveInboundRequests={approveInboundRequests}
+      rejectInboundRequests={rejectInboundRequests}/>,
     },
     {
       key: '2',
       label: '승인',
-      children: <PrintData type="accepted" data={data}/>,
+      children: <PrintData type="accepted" data={data}
+      selectedRowKeys={selectedRowKeys}
+      setSelectedRowKeys={setSelectedRowKeys}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
+      approveInboundRequests={approveInboundRequests}
+      rejectInboundRequests={rejectInboundRequests}/>,
     },
     {
       key: '3',
       label: '미승인',
-      children: <PrintData type="denied" data={data}/>,
+      children: <PrintData type="denied" data={data}
+      selectedRowKeys={selectedRowKeys}
+      setSelectedRowKeys={setSelectedRowKeys}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
+      approveInboundRequests={approveInboundRequests}
+      rejectInboundRequests={rejectInboundRequests}/>,
     },
     {
       key: '4',
@@ -65,11 +81,20 @@ export default function InboundUI({
             item={item}
             setItem={setItem}
             fetchData={fetchData}
+            selectedRowKeys={selectedRowKeys}
+            setSelectedRowKeys={setSelectedRowKeys}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
             approveInboundRequests={approveInboundRequests}
             rejectInboundRequests={rejectInboundRequests}
-            handleCheckboxChange={handleCheckboxChange}
           />
-          <PrintData type="search" data={data} /> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}
+          <PrintData type="search" data={data} 
+                    selectedRowKeys={selectedRowKeys}
+                    setSelectedRowKeys={setSelectedRowKeys}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    approveInboundRequests={approveInboundRequests}
+                    rejectInboundRequests={rejectInboundRequests}/> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}
         </>
       ),
     },

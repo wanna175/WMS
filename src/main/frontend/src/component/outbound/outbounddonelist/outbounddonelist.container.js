@@ -20,6 +20,10 @@ export default function Outbound() {
   const [outboundMart, setOutboundMart] = useState("");
   const [outboundIds, setOutboundIds] = useState([]); // 한번에 여러 아이디를 담을거기 때문에 배열로 설정
 
+    // 선택된 행을 상태로 관리
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
+
  // 데이터를 가져오는 fetchData 함수 정의
  const fetchData = async () => {
   try {
@@ -54,8 +58,15 @@ export default function Outbound() {
 };
 
 // 반려 요청 함수
-const rejectOutboundDone = async () => {
+const rejectOutboundDone = async (selectedRows) => {
   try {
+    // selectedRows에서 outboundId만 추출
+    const outboundIds = selectedRows.map((row) => row.outboundId);
+    if (outboundIds.length === 0) {
+      console.error("선택된 출고 요청서가 없습니다.");
+      return;
+    }
+    
     const response = await post("/outbound/done_reject", { outboundIds });
     console.log("반려된 ID:", response.outboundIds);
     setOutboundIds([]); // 반려 후 선택된 ID 초기화
@@ -65,18 +76,7 @@ const rejectOutboundDone = async () => {
   }
 };
 
-// 체크박스 클릭 시 호출될 함수
-// 매개변수를 id로 받는 함수
-const handleCheckboxChange = (id) => {
-  if (outboundIds.includes(id)) {
-    // outboudids 배열에 id가 있는지 확인하고 true, false를 반환
-    // 이미 체크된 ID는 체크 해제
-    setOutboundIds(outboundIds.filter((outboundId) => outboundId !== id));
-  } else {
-    // 새로운 ID는 체크 추가
-    setOutboundIds([...outboundIds, id]);
-  }
-};
+
 
 // 컴포넌트가 렌더링할 때 특정 동작을 수행하는 useEffect로 컴포넌트가 처음 렌더링될 때
 // 데이터를 가져오는 fetchData를 호출
@@ -105,8 +105,11 @@ return (
         outboundIds={outboundIds}
         setOutboundIds={setOutboundIds}
         fetchData={fetchData} // fetchData 함수 전달
+        selectedRowKeys={selectedRowKeys}
+        setSelectedRowKeys={setSelectedRowKeys}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
         rejectOutboundDone={rejectOutboundDone}
-        handleCheckboxChange={handleCheckboxChange}
       /> // 데이터를 OutboundUI에 전달
     ) : (
       <p>데이터를 불러오는 중...</p>

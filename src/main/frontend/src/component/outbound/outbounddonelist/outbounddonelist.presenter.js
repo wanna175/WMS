@@ -10,12 +10,9 @@ import PrintDoneData from "../Tabcontents/PrintDoneData";
 export default function OutboundUI({
   data,
   status,
-  requestDate,
-  setRequestDate,
   setStatus,
   startDate,
   setStartDate,
-  endDate,
   setEndDate,
   arriveName,
   setArriveName,
@@ -23,11 +20,12 @@ export default function OutboundUI({
   setItem,
   outboundMart,
   setOutboundMart,
-  outboundIds,
-  setOutboundIds,
   fetchData,
+  selectedRowKeys,
+  setSelectedRowKeys,
+  selectedRows,
+  setSelectedRows,
   rejectOutboundDone,
-  handleCheckboxChange
 }) {
 
   const onChange = (key) => {
@@ -37,17 +35,32 @@ export default function OutboundUI({
     {
       key: '1',
       label: '전체 조회',
-      children: <PrintDoneData type="all" data={data}/>,
+      children: <PrintDoneData type="all" data={data}
+      rejectOutboundDone={rejectOutboundDone}
+      selectedRowKeys={selectedRowKeys}
+      setSelectedRowKeys={setSelectedRowKeys}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}/>,
     },
     {
       key: '2',
       label: '출고완료',
-      children: <PrintDoneData type="start" data={data}/>,
+      children: <PrintDoneData type="start" data={data}
+      rejectOutboundDone={rejectOutboundDone}
+      selectedRowKeys={selectedRowKeys}
+      setSelectedRowKeys={setSelectedRowKeys}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}/>,
     },
     {
       key: '3',
       label: '입고완료',
-      children: <PrintDoneData type="end" data={data}/>,
+      children: <PrintDoneData type="end" data={data}
+      rejectOutboundDone={rejectOutboundDone}
+      selectedRowKeys={selectedRowKeys}
+      setSelectedRowKeys={setSelectedRowKeys}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}/>,
     },
     {
       key: '4',
@@ -69,8 +82,17 @@ export default function OutboundUI({
             setItem={setItem}
             fetchData={fetchData}
             rejectOutboundDone={rejectOutboundDone}
+            selectedRowKeys={selectedRowKeys}
+            setSelectedRowKeys={setSelectedRowKeys}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
           />
-          <PrintDoneData type="search" data={data} /> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}
+          <PrintDoneData type="search" data={data} 
+                      rejectOutboundDone={rejectOutboundDone}
+                      selectedRowKeys={selectedRowKeys}
+                      setSelectedRowKeys={setSelectedRowKeys}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}/> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}
         </>
       ),
     },

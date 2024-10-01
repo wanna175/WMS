@@ -9,12 +9,9 @@
   export default function OutboundUI({
     data,
     status,
-    requestDate,
-    setRequestDate,
     setStatus,
     startDate,
     setStartDate,
-    endDate,
     setEndDate,
     arriveName,
     setArriveName,
@@ -22,12 +19,13 @@
     setItem,
     outboundMart,
     setOutboundMart,
-    outboundIds,
-    setOutboundIds,
     fetchData,
+    selectedRowKeys,
+    setSelectedRowKeys,
+    selectedRows,
+    setSelectedRows,
     approveOutboundRequests,
     rejectOutboundRequests,
-    handleCheckboxChange
   }) {
 
     const onChange = (key) => {
@@ -37,17 +35,35 @@
       {
         key: '1',
         label: '전체 조회',
-        children: <PrintData type="all" data={data}/>,
+        children: <PrintData type="all" data={data}
+        approveOutboundRequests={approveOutboundRequests}
+        rejectOutboundRequests={rejectOutboundRequests}
+        selectedRowKeys={selectedRowKeys}
+        setSelectedRowKeys={setSelectedRowKeys}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}/>,
       },
       {
         key: '2',
         label: '승인',
-        children: <PrintData type="accepted" data={data}/>,
+        children: <PrintData type="accepted" data={data}
+        approveOutboundRequests={approveOutboundRequests}
+        rejectOutboundRequests={rejectOutboundRequests}
+        selectedRowKeys={selectedRowKeys}
+        setSelectedRowKeys={setSelectedRowKeys}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}/>,
       },
       {
         key: '3',
         label: '미승인',
-        children: <PrintData type="denied" data={data}/>,
+        children: <PrintData type="denied" data={data}
+        approveOutboundRequests={approveOutboundRequests}
+        rejectOutboundRequests={rejectOutboundRequests}
+        selectedRowKeys={selectedRowKeys}
+        setSelectedRowKeys={setSelectedRowKeys}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}/>,
       },
       {
         key: '4',
@@ -68,10 +84,21 @@
               item={item}
               setItem={setItem}
               fetchData={fetchData}
+              selectedRowKeys={selectedRowKeys}
+              setSelectedRowKeys={setSelectedRowKeys}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
               approveOutboundRequests={approveOutboundRequests}
               rejectOutboundRequests={rejectOutboundRequests}
             />
-            <PrintData type="search" data={data} /> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}
+            <PrintData type="search" data={data} 
+            approveOutboundRequests={approveOutboundRequests}
+            rejectOutboundRequests={rejectOutboundRequests}
+            selectedRowKeys={selectedRowKeys}
+            setSelectedRowKeys={setSelectedRowKeys}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
+            /> {/* PrintData는 SearchContent 아래에서 데이터를 출력 */}
           </>
         ),
       },

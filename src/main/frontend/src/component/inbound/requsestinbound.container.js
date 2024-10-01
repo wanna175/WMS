@@ -19,6 +19,10 @@ export default function Inbound() {
   const [departStorageName, setDepartStorageName] = useState("");
   const [inboundIds, setInboundIds] = useState([]); // 한번에 여러 아이디를 담을거기 때문에 배열로 설정
 
+      // 선택된 행을 상태로 관리
+      const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+      const [selectedRows, setSelectedRows] = useState([]);
+
   // 데이터를 가져오는 fetchData 함수 정의
   const fetchData = async () => {
     try {
@@ -52,8 +56,15 @@ export default function Inbound() {
   };
 
   // 승인 요청 함수
-  const approveInboundRequests = async () => {
-    try {
+  const approveInboundRequests = async (selectedRows) => {
+      try {
+    // selectedRows에서 outboundId만 추출
+    const inboundIds = selectedRows.map((row) => row.inboundId);
+    if (inboundIds.length === 0) {
+      console.error("선택된 출고 요청서가 없습니다.");
+      return;
+    }
+
       const response = await post("/inbound/approve", { inboundIds });
       console.log("승인된 ID:", response.inboundIds);
       setInboundIds([]); // 승인 후 선택된 ID 초기화
@@ -64,27 +75,21 @@ export default function Inbound() {
   };
 
   // 반려 요청 함수
-  const rejectInboundRequests = async () => {
+  const rejectInboundRequests = async (selectedRows) => {
     try {
+      // selectedRows에서 outboundId만 추출
+      const inboundIds = selectedRows.map((row) => row.inboundId);
+      if (inboundIds.length === 0) {
+        console.error("선택된 출고 요청서가 없습니다.");
+        return;
+      }
+
       const response = await post("/inbound/reject", { inboundIds });
       console.log("반려된 ID:", response.inboundIds);
       setInboundIds([]); // 반려 후 선택된 ID 초기화
       fetchData(); // 데이터 다시 불러오기
     } catch (error) {
       console.error("반려 요청 중 오류가 발생했습니다:", error);
-    }
-  };
-
-  // 체크박스 클릭 시 호출될 함수
-  // 매개변수를 id로 받는 함수
-  const handleCheckboxChange = (id) => {
-    if (inboundIds.includes(id)) {
-      // outboudids 배열에 id가 있는지 확인하고 true, false를 반환
-      // 이미 체크된 ID는 체크 해제
-      setInboundIds(inboundIds.filter((inboundId) => inboundId !== id));
-    } else {
-      // 새로운 ID는 체크 추가
-      setInboundIds([...inboundIds, id]);
     }
   };
 
@@ -113,9 +118,12 @@ export default function Inbound() {
           inboundIds={inboundIds}
           setInboundIds={setInboundIds}
           fetchData={fetchData} // fetchData 함수 전달
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
           approveInboundRequests={approveInboundRequests}
           rejectInboundRequests={rejectInboundRequests}
-          handleCheckboxChange={handleCheckboxChange}
         /> // 데이터를 InboundUI에 전달
       ) : (
         <p>데이터를 불러오는 중...</p>

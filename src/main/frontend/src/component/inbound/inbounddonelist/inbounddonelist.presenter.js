@@ -7,12 +7,9 @@ import PrintDoneData from "../tabcontents/PrintDoneData";
 export default function InboundUI({
   data,
   status,
-  requestDate,
-  setRequestDate,
   setStatus,
   startDate,
   setStartDate,
-  endDate,
   setEndDate,
   arriveName,
   setArriveName,
@@ -20,10 +17,7 @@ export default function InboundUI({
   setItem,
   outboundMart,
   setOutboundMart,
-  outboundIds,
-  setOutboundIds,
   fetchData,
-  handleCheckboxChange,
 }) {
   const onChange = (key) => {
     console.log(key);
